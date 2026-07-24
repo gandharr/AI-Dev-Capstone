@@ -14,12 +14,27 @@ The purpose of this repository is to document my progress while learning AI-assi
 - Visual Studio Code
 - AI Assistant (Claude Code / Gemini)
 
-## Repository Structure
+## Getting Started
 
-- `README.md` – Project overview and documentation
-- `LICENSE` – Project license
-- `.gitignore` – Git ignore rules
-- `CLAUDE.md` – AI assistant instructions and project conventions
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (LTS)
+
+### Installation
+
+```bash
+git clone https://github.com/gandharr/AI-Dev-Capstone.git
+cd AI-Dev-Capstone
+npm install
+```
+
+### Usage
+
+```bash
+npm start
+```
+
+> **Note:** Run commands will be updated as the application is built out during the capstone.
 
 ## Goals
 
@@ -27,3 +42,7 @@ The purpose of this repository is to document my progress while learning AI-assi
 - Follow Conventional Commits
 - Build and maintain a clean Git history
 - Complete the capstone project successfully
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
