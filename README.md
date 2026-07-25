@@ -9,6 +9,7 @@ The purpose of this repository is to document my progress while learning AI-assi
 ## Tech Stack
 
 - Node.js (LTS)
+- React
 - JavaScript
 - Git & GitHub
 - Visual Studio Code
@@ -34,7 +35,13 @@ npm install
 npm start
 ```
 
-> **Note:** Run commands will be updated as the application is built out during the capstone.
+Open [http://localhost:5173](http://localhost:5173) to view the settings form.
+
+For a production build:
+
+```bash
+npm run build
+```
 
 ## Goals
 
