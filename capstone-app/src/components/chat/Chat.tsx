@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const CHAT_STORAGE_KEY = 'capstone_chat_messages';
 
 export function Chat() {
-  const { messages, setMessages, append, status, stop } = useChat({
+  const { messages, setMessages, sendMessage, status, stop } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat' }),
     // We handle errors gracefully
     onError: (err) => {
@@ -30,7 +30,7 @@ export function Chat() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (input.trim() && !isLoading) {
-      append({ role: 'user', content: input });
+      sendMessage({ parts: [{ type: 'text', text: input }], role: 'user' });
       setInput('');
     }
   };
