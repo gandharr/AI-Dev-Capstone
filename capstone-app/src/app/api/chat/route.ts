@@ -8,10 +8,15 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
+    const coreMessages = messages.map((msg: any) => ({
+      role: msg.role,
+      content: msg.parts?.map((p: any) => p.text).join('') || msg.content || ''
+    }));
+
     const result = await streamText({
       model: chatModel,
       system: chatSystemPrompt,
-      messages,
+      messages: coreMessages,
     });
 
     return result.toUIMessageStreamResponse();
