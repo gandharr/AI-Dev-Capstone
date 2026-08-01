@@ -80,7 +80,7 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
               }
             }}
           >
-            {message.parts?.filter((p: { type: string }) => p.type === 'text').map((p: { type: string, text?: string }) => p.text).join('\n') || ''}
+            {message.content}
           </ReactMarkdown>
         </div>
       </div>
