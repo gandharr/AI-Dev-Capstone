@@ -30,6 +30,12 @@ export default function Navigation() {
               >
                 Settings
               </Link>
+              <Link
+                href="/chat"
+                className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-primary hover:border-primary/80 hover:text-primary/80"
+              >
+                Chat
+              </Link>
             </div>
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
