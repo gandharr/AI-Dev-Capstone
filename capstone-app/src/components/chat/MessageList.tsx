@@ -20,11 +20,10 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
   return (
     <div className="flex flex-col space-y-6 pb-4">
       <AnimatePresence mode="popLayout">
-        {messages.map((message, index) => (
+        {messages.map((message) => (
           <MessageBubble
             key={message.id}
             message={message}
-            isLast={index === messages.length - 1}
           />
         ))}
         {showThinking && (

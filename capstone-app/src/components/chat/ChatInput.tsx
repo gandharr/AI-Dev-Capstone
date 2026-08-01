@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { ArrowUp, Square, Loader2 } from 'lucide-react';
+import { ArrowUp, Square } from 'lucide-react';
 import { type FormEvent, type ChangeEvent, useRef, useEffect, KeyboardEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 

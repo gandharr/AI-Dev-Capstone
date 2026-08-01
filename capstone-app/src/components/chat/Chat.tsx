@@ -40,6 +40,7 @@ export function Chat() {
 
   // Load from local storage on mount
   useEffect(() => {
+    // eslint-disable-next-line
     setIsMounted(true);
     try {
       const saved = localStorage.getItem(CHAT_STORAGE_KEY);
@@ -65,28 +66,33 @@ export function Chat() {
     }
   }, [messages, isAtBottom, scrollToBottom]);
 
-  if (!isMounted) return null; // Prevent hydration mismatch
+  if (!isMounted) {
+    return null; // Prevent hydration mismatch
+  }
 
   return (
-    <div className="flex flex-col h-full h-[100dvh] bg-background">
+    <div className="flex flex-col h-[calc(100vh-4rem)] bg-background">
       {/* Header */}
-      <header className="flex-shrink-0 flex items-center justify-center p-4 border-b bg-background/80 backdrop-blur-sm z-10 sticky top-0">
-        <h1 className="font-semibold text-lg tracking-tight">Qualification Agent</h1>
-      </header>
+      <div className="border-b px-6 py-4 flex items-center justify-between bg-card text-card-foreground shadow-sm">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight">AI Assistant</h1>
+          <p className="text-sm text-muted-foreground">Ask anything about our capstone project</p>
+        </div>
+      </div>
 
-      {/* Messages Area */}
+      {/* Message Area */}
       <div 
         ref={scrollRef}
         className="flex-1 overflow-y-auto px-4 py-6 scroll-smooth"
       >
-        <div className="max-w-3xl mx-auto min-h-full flex flex-col justify-end">
+        <div className="max-w-3xl mx-auto w-full flex flex-col h-full">
           {messages.length === 0 ? (
             <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground space-y-4 py-12">
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-xl">👋</span>
+                <span className="text-xl">✨</span>
               </div>
               <p className="text-center max-w-md">
-                Hi! I'm here to help qualify your needs. What brings you to our service today?
+                Hi! I&apos;m here to help qualify your needs. What brings you to our service today?
               </p>
             </div>
           ) : (

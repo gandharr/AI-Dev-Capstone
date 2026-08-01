@@ -14,7 +14,7 @@ interface MessageBubbleProps {
 }
 
 // Memoize to prevent unnecessary re-renders of older messages
-export const MessageBubble = memo(function MessageBubble({ message, isLast }: MessageBubbleProps) {
+export const MessageBubble = memo(function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === 'user';
 
   return (
@@ -66,21 +66,23 @@ export const MessageBubble = memo(function MessageBubble({ message, isLast }: Me
               pre({ children }) {
                 return <pre className="p-2 rounded bg-black/10 dark:bg-white/10 overflow-x-auto">{children}</pre>;
               },
-              code({ node, className, children, ...props }) {
+              code({ className, children, ...props }) {
+                // @ts-expect-error - node prop is provided by react-markdown but we omit it from props
+                const { node, ...rest } = props;
                 const match = /language-(\w+)/.exec(className || '');
                 return match ? (
-                  <code className={className} {...props}>
+                  <code className={className} {...rest}>
                     {children}
                   </code>
                 ) : (
-                  <code className="bg-black/10 dark:bg-white/10 rounded px-1 py-0.5" {...props}>
+                  <code className="bg-black/10 dark:bg-white/10 rounded px-1 py-0.5" {...rest}>
                     {children}
                   </code>
                 );
               }
             }}
           >
-            {message.parts?.filter((p: any) => p.type === 'text').map((p: any) => p.text).join('\n') || ''}
+            {message.parts?.filter((p: { type: string }) => p.type === 'text').map((p: { type: string, text?: string }) => p.text).join('\n') || ''}
           </ReactMarkdown>
         </div>
       </div>
