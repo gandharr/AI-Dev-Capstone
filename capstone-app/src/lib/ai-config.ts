@@ -1,4 +1,4 @@
-import { anthropic } from "@ai-sdk/anthropic";
+import { google } from "@ai-sdk/google";
 
 /**
  * Model configuration for the central AI interaction (qualification chat).
@@ -7,8 +7,8 @@ import { anthropic } from "@ai-sdk/anthropic";
  * Future extensions (like FE-07) can build on this module.
  */
 
-// We use claude-3-5-sonnet-20240620 as the default capable model for this chat
-export const chatModel = anthropic('claude-3-5-sonnet-20240620');
+// We use gemini-1.5-flash as the default capable model for this chat
+export const chatModel = google('gemini-1.5-flash');
 
 export const chatSystemPrompt = `
 You are a helpful and professional qualification assistant. 
