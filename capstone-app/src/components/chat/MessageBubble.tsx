@@ -10,7 +10,6 @@ import { memo } from 'react';
 
 interface MessageBubbleProps {
   message: UIMessage;
-  isLast: boolean;
 }
 
 // Memoize to prevent unnecessary re-renders of older messages
@@ -67,8 +66,7 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
                 return <pre className="p-2 rounded bg-black/10 dark:bg-white/10 overflow-x-auto">{children}</pre>;
               },
               code({ className, children, ...props }) {
-                // @ts-expect-error - node prop is provided by react-markdown but we omit it from props
-                const { node, ...rest } = props;
+                const { node, ...rest } = props as typeof props & { node?: unknown };
                 const match = /language-(\w+)/.exec(className || '');
                 return match ? (
                   <code className={className} {...rest}>
