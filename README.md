@@ -1,48 +1,16 @@
-# AI Development Capstone
+# React + Vite
 
-This repository contains my work for the AI-Assisted Development Capstone.
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
-## Project Overview
+Currently, two official plugins are available:
 
-The purpose of this repository is to document my progress while learning AI-assisted software development using modern developer tools and Git workflows.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## Tech Stack
+## React Compiler
 
-- Node.js (LTS)
-- JavaScript
-- Git & GitHub
-- Visual Studio Code
-- AI Assistant (Claude Code / Gemini)
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Getting Started
+## Expanding the Oxlint configuration
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (LTS)
-
-### Installation
-
-```bash
-git clone https://github.com/gandharr/AI-Dev-Capstone.git
-cd AI-Dev-Capstone
-npm install
-```
-
-### Usage
-
-```bash
-npm start
-```
-
-> **Note:** Run commands will be updated as the application is built out during the capstone.
-
-## Goals
-
-- Learn AI-assisted development workflows
-- Follow Conventional Commits
-- Build and maintain a clean Git history
-- Complete the capstone project successfully
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
