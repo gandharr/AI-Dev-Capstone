@@ -18,6 +18,7 @@ export async function POST(req: Request) {
       system: chatSystemPrompt,
       messages: coreMessages,
       tools: {
+        // @ts-expect-error Types for tool execution are mismatching in this AI SDK version
         scoreLead: tool({
           description: 'Score a lead based on company information. Use this once you know the company name, employee count, and industry.',
           parameters: z.object({
