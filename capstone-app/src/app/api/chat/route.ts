@@ -8,10 +8,12 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
+    console.log('Incoming messages:', JSON.stringify(messages, null, 2));
     const coreMessages = messages.map((msg: any) => ({
       role: msg.role,
       content: msg.parts?.map((p: any) => p.text).join('') || msg.content || ''
     }));
+    console.log('Core messages:', JSON.stringify(coreMessages, null, 2));
 
     const result = await streamText({
       model: chatModel,

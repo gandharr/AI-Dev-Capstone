@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const CHAT_STORAGE_KEY = 'capstone_chat_messages';
 
 export function Chat() {
-  const { messages, setMessages, sendMessage, status, stop } = useChat({
+  const { messages, setMessages, sendMessage, status, stop, error } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat' }),
     // We handle errors gracefully
     onError: (err) => {
@@ -96,7 +96,16 @@ export function Chat() {
               </p>
             </div>
           ) : (
-            <MessageList messages={messages} isLoading={isLoading} />
+            <>
+              <MessageList messages={messages} isLoading={isLoading} />
+              {error && (
+                <div className="bg-red-500/10 text-red-500 p-4 rounded-xl text-sm mb-4 border border-red-500/20 max-w-2xl mx-auto">
+                  <strong>Error:</strong> {error.message || 'An error occurred during chat.'}
+                  <br />
+                  If you see an API key error, make sure GOOGLE_GENERATIVE_AI_API_KEY is properly set in your Vercel Environment Variables and that you hit Redeploy!
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
