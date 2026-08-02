@@ -8,7 +8,7 @@ import { google } from "@ai-sdk/google";
  */
 
 // We use gemini-1.5-flash as the default capable model for this chat
-export const chatModel = google('gemini-2.5-flash');
+export const chatModel = google('gemini-3.5-flash');
 
 export const chatSystemPrompt = `
 You are a helpful and professional qualification assistant. 
