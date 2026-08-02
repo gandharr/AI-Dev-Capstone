@@ -84,19 +84,22 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
             {message.parts?.filter((p: { type: string }) => p.type === 'text').map((p: { type: string, text?: string }) => p.text).join('\n') || ''}
           </ReactMarkdown>
 
-          {message.toolInvocations?.map(toolInvocation => {
-            if (toolInvocation.toolName === 'scoreLead') {
+          {message.parts?.map((part: any, index: number) => {
+            if (part.type === 'tool-invocation' || part.toolName) {
+              if (part.toolName === 'scoreLead') {
+                return (
+                  <div key={part.toolCallId || index}>
+                    <ScoreLeadTool toolInvocation={part} />
+                  </div>
+                );
+              }
               return (
-                <div key={toolInvocation.toolCallId}>
-                  <ScoreLeadTool toolInvocation={toolInvocation} />
+                <div key={part.toolCallId || index} className="text-muted-foreground text-sm italic my-2">
+                  Calling tool {part.toolName}...
                 </div>
               );
             }
-            return (
-              <div key={toolInvocation.toolCallId} className="text-muted-foreground text-sm italic my-2">
-                Calling tool {toolInvocation.toolName}...
-              </div>
-            );
+            return null;
           })}
         </div>
       </div>

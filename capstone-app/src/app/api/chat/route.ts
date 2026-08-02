@@ -25,7 +25,8 @@ export async function POST(req: Request) {
             employeeCount: z.number().describe('The number of employees at the company.'),
             industry: z.string().describe('The industry the company operates in.'),
           }),
-          execute: async ({ companyName, employeeCount, industry }) => {
+          execute: async (args: any) => {
+            const { companyName, employeeCount, industry } = args;
             // Simulate API delay
             await new Promise(resolve => setTimeout(resolve, 2000));
             
