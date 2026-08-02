@@ -17,8 +17,6 @@ export async function POST(req: Request) {
       model: chatModel,
       system: chatSystemPrompt,
       messages: coreMessages,
-      tools: {
-        // @ts-expect-error Types for tool execution are mismatching in this AI SDK version
         scoreLead: tool({
           description: 'Score a lead based on company information. Use this once you know the company name, employee count, and industry.',
           parameters: z.object({
@@ -26,8 +24,7 @@ export async function POST(req: Request) {
             employeeCount: z.number().describe('The number of employees at the company.'),
             industry: z.string().describe('The industry the company operates in.'),
           }),
-          execute: async (args: any) => {
-            const { companyName, employeeCount, industry } = args;
+          execute: async ({ companyName, employeeCount, industry }) => {
             // Simulate API delay
             await new Promise(resolve => setTimeout(resolve, 2000));
             
