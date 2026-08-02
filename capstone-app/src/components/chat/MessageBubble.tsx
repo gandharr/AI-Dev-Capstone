@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm';
 import { cn } from '@/lib/utils';
 import { Bot, User } from 'lucide-react';
 import { memo } from 'react';
+import { ScoreLeadTool } from './tools/ScoreLeadTool';
 
 interface MessageBubbleProps {
   message: UIMessage;
@@ -82,6 +83,21 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
           >
             {message.parts?.filter((p: { type: string }) => p.type === 'text').map((p: { type: string, text?: string }) => p.text).join('\n') || ''}
           </ReactMarkdown>
+
+          {message.toolInvocations?.map(toolInvocation => {
+            if (toolInvocation.toolName === 'scoreLead') {
+              return (
+                <div key={toolInvocation.toolCallId}>
+                  <ScoreLeadTool toolInvocation={toolInvocation} />
+                </div>
+              );
+            }
+            return (
+              <div key={toolInvocation.toolCallId} className="text-muted-foreground text-sm italic my-2">
+                Calling tool {toolInvocation.toolName}...
+              </div>
+            );
+          })}
         </div>
       </div>
     </motion.div>

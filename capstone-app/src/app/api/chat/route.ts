@@ -1,4 +1,5 @@
-import { streamText } from 'ai';
+import { streamText, tool } from 'ai';
+import { z } from 'zod';
 import { chatModel, chatSystemPrompt } from '@/lib/ai-config';
 
 // Allow streaming responses up to 30 seconds
@@ -9,16 +10,45 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
 
     console.log('Incoming messages:', JSON.stringify(messages, null, 2));
-    const coreMessages = messages.map((msg: any) => ({
-      role: msg.role,
-      content: msg.parts?.map((p: any) => p.text).join('') || msg.content || ''
-    }));
+    const coreMessages = messages; // Pass messages directly so tools work
     console.log('Core messages:', JSON.stringify(coreMessages, null, 2));
 
     const result = await streamText({
       model: chatModel,
       system: chatSystemPrompt,
       messages: coreMessages,
+      tools: {
+        scoreLead: tool({
+          description: 'Score a lead based on company information. Use this once you know the company name, employee count, and industry.',
+          parameters: z.object({
+            companyName: z.string().describe('The name of the company.'),
+            employeeCount: z.number().describe('The number of employees at the company.'),
+            industry: z.string().describe('The industry the company operates in.'),
+          }),
+          execute: async ({ companyName, employeeCount, industry }) => {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Intentionally throw an error for testing the error state
+            if (companyName.toLowerCase().includes('error')) {
+              throw new Error('Failed to score lead: Service unavailable or invalid company data.');
+            }
+            
+            // Basic scoring logic
+            let score = 50;
+            if (employeeCount > 100) score += 20;
+            if (employeeCount > 1000) score += 10;
+            if (['software', 'technology', 'saas'].includes(industry.toLowerCase())) score += 20;
+            
+            return {
+              companyName,
+              score: Math.min(100, Math.max(0, score)),
+              tier: score >= 80 ? 'Tier 1' : score >= 60 ? 'Tier 2' : 'Tier 3',
+              timestamp: new Date().toISOString(),
+            };
+          },
+        }),
+      },
     });
 
     return result.toUIMessageStreamResponse();
