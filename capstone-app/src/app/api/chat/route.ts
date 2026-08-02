@@ -17,6 +17,7 @@ export async function POST(req: Request) {
       model: chatModel,
       system: chatSystemPrompt,
       messages: coreMessages,
+      tools: {
         scoreLead: tool({
           description: 'Score a lead based on company information. Use this once you know the company name, employee count, and industry.',
           parameters: z.object({
