@@ -1,4 +1,4 @@
-import { streamText, tool } from 'ai';
+import { streamText, tool, convertToModelMessages } from 'ai';
 import { z } from 'zod';
 import { chatModel, chatSystemPrompt } from '@/lib/ai-config';
 
@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
 
     console.log('Incoming messages:', JSON.stringify(messages, null, 2));
-    const coreMessages = messages; // Pass messages directly so tools work
+    const coreMessages = await convertToModelMessages(messages); // Pass messages directly so tools work
     console.log('Core messages:', JSON.stringify(coreMessages, null, 2));
 
     const result = await streamText({
