@@ -85,6 +85,7 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
             {message.parts?.filter((p: { type: string }) => p.type === 'text').map((p: { type: string, text?: string }) => p.text).join('\n') || ''}
           </ReactMarkdown>
 
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {message.parts?.map((part: any, index: number) => {
             if (part.type === 'tool-invocation' || part.toolName) {
               if (part.toolName === 'scoreLead') {

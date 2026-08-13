@@ -25,7 +25,7 @@ export async function POST(req: Request) {
             employeeCount: z.number().describe('The number of employees at the company.'),
             industry: z.string().describe('The industry the company operates in.'),
           }),
-          execute: async ({ companyName, employeeCount, industry }: any) => {
+          execute: async ({ companyName, employeeCount, industry }: { companyName: string; employeeCount: number; industry: string }) => {
             // Simulate API delay
             await new Promise(resolve => setTimeout(resolve, 2000));
             
@@ -47,13 +47,13 @@ export async function POST(req: Request) {
               timestamp: new Date().toISOString(),
             };
           },
-        } as any),
+        }),
         analyzeMarketTrends: tool({
           description: 'Analyze market trends for a specific industry or sector. Use this when asked about trends, growth, or market charts.',
           parameters: z.object({
             industry: z.string().describe('The industry to analyze (e.g., tech, healthcare, finance)'),
           }),
-          execute: async ({ industry }: any) => {
+          execute: async ({ industry }: { industry: string }) => {
             // Simulate API delay
             await new Promise(resolve => setTimeout(resolve, 2000));
             
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
               dataPoints,
             };
           },
-        } as any),
+        }),
       },
     });
 
