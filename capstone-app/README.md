@@ -63,7 +63,37 @@ This project features Generative UI with interactive tool components. The chat a
 ```
 
 **UI States**:
-- **`partial-call`**: Displays a skeleton loading state ("Gathering info...").
-- **`call`**: Displays an active executing state ("Scoring lead...").
-- **`result` (Success)**: Renders a Score Card component with the score, industry, and employee count.
-- **`result` (Error)**: Displays an error card (try providing "Error" as the company name to see this).
+- **`input-streaming`**: Displays a skeleton loading state ("Gathering info...").
+- **`input-available`**: Displays an active executing state ("Scoring lead...").
+- **`output-available` (Success)**: Renders a Score Card component with the score, industry, and employee count.
+- **`output-error` (Error)**: Displays an error card (try providing "Error" as the company name to see this).
+
+### `analyzeMarketTrends`
+**Description**: Analyzes market trends for a specific industry or sector.
+**Trigger**: Called when the AI needs to show trends, growth, or market charts.
+
+**Schema**:
+```typescript
+{
+  industry: string; // The industry to analyze (e.g., tech, healthcare, finance)
+}
+```
+
+**Return Shape**:
+```typescript
+{
+  industry: string; // The industry analyzed
+  trend: 'up' | 'down' | 'flat'; // The overall trend direction
+  dataPoints: {
+    month: string; // The month (e.g., 'Jan')
+    value: number; // The value for that month
+  }[];
+}
+```
+
+**UI States**:
+- **`input-streaming`**: Displays a skeleton loading state ("Preparing market analysis...").
+- **`input-available`**: Displays an active executing state ("Analyzing market trends...").
+- **`output-available` (Success)**: Renders a responsive, hand-rolled SVG bar chart showing the time-series data.
+- **`output-error` (Error)**: Displays an error card.
+

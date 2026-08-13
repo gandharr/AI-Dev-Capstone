@@ -1,17 +1,19 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Building2, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { TrendingUp, AlertCircle, Loader2, TrendingDown, Minus } from 'lucide-react';
 import type { UIToolInvocation } from 'ai';
 
-interface ScoreLeadToolProps {
+interface AnalyzeMarketToolProps {
   toolInvocation: UIToolInvocation<any>;
 }
 
-export function ScoreLeadTool({ toolInvocation }: ScoreLeadToolProps) {
-  // Extract state and details
+export function AnalyzeMarketTool({ toolInvocation }: AnalyzeMarketToolProps) {
   const { state, input, output, errorText } = toolInvocation as any;
 
+  // Find max value for SVG scaling
+  const maxVal = output?.dataPoints ? Math.max(...output.dataPoints.map((d: any) => d.value)) : 100;
+  
   return (
     <motion.div layout className="my-4 border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm relative">
       <AnimatePresence mode="popLayout">
@@ -26,7 +28,7 @@ export function ScoreLeadTool({ toolInvocation }: ScoreLeadToolProps) {
             className="p-4 flex items-center space-x-3 text-muted-foreground w-full"
           >
             <Loader2 className="animate-spin w-5 h-5 text-primary" />
-            <span className="text-sm">Gathering company info...</span>
+            <span className="text-sm">Preparing market analysis...</span>
           </motion.div>
         )}
 
@@ -42,10 +44,10 @@ export function ScoreLeadTool({ toolInvocation }: ScoreLeadToolProps) {
           >
             <div className="flex items-center space-x-3">
               <Loader2 className="animate-spin w-5 h-5 text-primary" />
-              <span className="text-sm font-medium">Scoring lead...</span>
+              <span className="text-sm font-medium">Analyzing market trends...</span>
             </div>
             <div className="text-xs text-muted-foreground ml-8">
-              Evaluating {input?.companyName || 'company'} in {input?.industry || 'industry'}...
+              Compiling data for {input?.industry || 'the requested sector'}...
             </div>
           </motion.div>
         )}
@@ -61,33 +63,42 @@ export function ScoreLeadTool({ toolInvocation }: ScoreLeadToolProps) {
           >
             <div className="bg-primary/10 p-4 flex items-center justify-between border-b border-primary/10">
               <div className="flex items-center space-x-2 text-primary">
-                <CheckCircle className="w-5 h-5" />
-                <span className="font-semibold">Lead Scored</span>
+                {output?.trend === 'up' ? <TrendingUp className="w-5 h-5" /> : 
+                 output?.trend === 'down' ? <TrendingDown className="w-5 h-5" /> : 
+                 <Minus className="w-5 h-5" />}
+                <span className="font-semibold capitalize">{output?.industry || 'Market'} Analysis</span>
               </div>
-              <span className="text-xs font-mono bg-background px-2 py-1 rounded-md border text-muted-foreground">
-                {output?.timestamp ? new Date(output.timestamp).toLocaleTimeString() : ''}
-              </span>
             </div>
-            <div className="p-4 grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Company</p>
-                <div className="flex items-center space-x-2">
-                  <Building2 className="w-4 h-4 text-muted-foreground" />
-                  <span className="font-medium">{output?.companyName}</span>
-                </div>
+            <div className="p-4">
+              <div className="flex items-end space-x-2 h-32 w-full mt-2">
+                {/* Hand-rolled SVG Bar Chart */}
+                <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  {output?.dataPoints?.map((point: any, index: number) => {
+                    const width = 100 / output.dataPoints.length;
+                    const height = (point.value / maxVal) * 100;
+                    const x = index * width;
+                    const y = 100 - height;
+                    return (
+                      <g key={index}>
+                        <rect
+                          x={x + (width * 0.1)} 
+                          y={y}
+                          width={width * 0.8}
+                          height={height}
+                          className="fill-primary/80 hover:fill-primary transition-colors"
+                          rx="2"
+                        />
+                      </g>
+                    );
+                  })}
+                </svg>
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Score</p>
-                <div className="flex items-baseline space-x-2">
-                  <span className="text-2xl font-bold text-primary">{output?.score}</span>
-                  <span className="text-sm text-muted-foreground">/ 100</span>
-                </div>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Tier</p>
-                <span className="inline-block px-2 py-1 bg-secondary text-secondary-foreground text-xs font-medium rounded-full">
-                  {output?.tier}
-                </span>
+              <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+                {output?.dataPoints?.map((point: any, index: number) => (
+                  <span key={index} className="flex-1 text-center truncate px-1">
+                    {point.month}
+                  </span>
+                ))}
               </div>
             </div>
           </motion.div>
@@ -105,9 +116,9 @@ export function ScoreLeadTool({ toolInvocation }: ScoreLeadToolProps) {
             <div className="flex items-start space-x-3 text-destructive">
               <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
               <div>
-                <p className="font-semibold text-sm">Failed to score lead</p>
+                <p className="font-semibold text-sm">Analysis failed</p>
                 <p className="text-xs mt-1 opacity-90">
-                  {errorText || 'An unexpected error occurred during execution.'}
+                  {errorText || 'Could not retrieve market data at this time.'}
                 </p>
               </div>
             </div>

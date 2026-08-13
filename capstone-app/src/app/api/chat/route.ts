@@ -48,6 +48,38 @@ export async function POST(req: Request) {
             };
           },
         } as any),
+        analyzeMarketTrends: tool({
+          description: 'Analyze market trends for a specific industry or sector. Use this when asked about trends, growth, or market charts.',
+          parameters: z.object({
+            industry: z.string().describe('The industry to analyze (e.g., tech, healthcare, finance)'),
+          }),
+          execute: async ({ industry }: any) => {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Intentionally throw an error for testing the error state
+            if (industry.toLowerCase().includes('error')) {
+              throw new Error('Failed to fetch market data: Service unavailable.');
+            }
+            
+            // Generate some mock data for the chart
+            const baseValue = Math.floor(Math.random() * 50) + 50;
+            const trend = Math.random() > 0.5 ? 'up' : 'down';
+            const dataPoints = Array.from({ length: 6 }).map((_, i) => {
+              const variance = Math.floor(Math.random() * 20) - 10;
+              return {
+                month: new Date(new Date().setMonth(new Date().getMonth() - (5 - i))).toLocaleString('default', { month: 'short' }),
+                value: Math.max(10, baseValue + (trend === 'up' ? i * 10 : i * -10) + variance),
+              };
+            });
+            
+            return {
+              industry,
+              trend,
+              dataPoints,
+            };
+          },
+        } as any),
       },
     });
 

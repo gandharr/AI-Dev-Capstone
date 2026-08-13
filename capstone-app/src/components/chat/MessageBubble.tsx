@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { Bot, User } from 'lucide-react';
 import { memo } from 'react';
 import { ScoreLeadTool } from './tools/ScoreLeadTool';
+import { AnalyzeMarketTool } from './tools/AnalyzeMarketTool';
 
 interface MessageBubbleProps {
   message: UIMessage;
@@ -90,6 +91,13 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
                 return (
                   <div key={part.toolCallId || index}>
                     <ScoreLeadTool toolInvocation={part} />
+                  </div>
+                );
+              }
+              if (part.toolName === 'analyzeMarketTrends') {
+                return (
+                  <div key={part.toolCallId || index}>
+                    <AnalyzeMarketTool toolInvocation={part} />
                   </div>
                 );
               }
