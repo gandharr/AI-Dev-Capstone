@@ -56,7 +56,7 @@ export function ChatInput({ input, handleInputChange, handleSubmit, isLoading, s
           onChange={handleInputChange}
           onKeyDown={onKeyDown}
           placeholder="Message AI..."
-          className="w-full max-h-[200px] bg-transparent resize-none px-4 py-3.5 focus:outline-none text-sm disabled:opacity-50"
+          className="w-full max-h-[200px] bg-transparent resize-none px-4 py-3.5 focus:outline-none text-base sm:text-sm disabled:opacity-50"
           rows={1}
           disabled={isLoading}
         />

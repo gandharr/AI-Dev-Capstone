@@ -6,13 +6,13 @@ import { useEffect, useState } from 'react';
 import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
 import { useAutoScroll } from '@/hooks/use-auto-scroll';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown, MessageSquare, TrendingUp, Building2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CHAT_STORAGE_KEY = 'capstone_chat_messages';
 
 export function Chat() {
-  const { messages, setMessages, sendMessage, status, stop, error } = useChat({
+  const { messages, setMessages, sendMessage, status, stop, error, reload } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat' }),
     // We handle errors gracefully
     onError: (err) => {
@@ -32,6 +32,12 @@ export function Chat() {
     if (input.trim() && !isLoading) {
       sendMessage({ parts: [{ type: 'text', text: input }], role: 'user' });
       setInput('');
+    }
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    if (!isLoading) {
+      sendMessage({ parts: [{ type: 'text', text: suggestion }], role: 'user' });
     }
   };
 
@@ -71,9 +77,9 @@ export function Chat() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] bg-background">
+    <div className="flex flex-col h-[100dvh] bg-background overscroll-none">
       {/* Header */}
-      <div className="border-b px-6 py-4 flex items-center justify-between bg-card text-card-foreground shadow-sm">
+      <div className="border-b px-6 py-4 flex items-center justify-between bg-card text-card-foreground shadow-sm z-10 relative">
         <div>
           <h1 className="text-xl font-semibold tracking-tight">AI Assistant</h1>
           <p className="text-sm text-muted-foreground">Ask anything about our capstone project</p>
@@ -87,25 +93,45 @@ export function Chat() {
       >
         <div className="max-w-3xl mx-auto w-full flex flex-col h-full">
           {messages.length === 0 ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-muted-foreground space-y-4 py-12">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-xl">✨</span>
+            <div className="flex-1 flex flex-col items-center justify-center space-y-8 py-12">
+              <div className="flex flex-col items-center text-center space-y-4">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <MessageSquare className="w-8 h-8 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-semibold tracking-tight">No conversations yet</h2>
+                  <p className="text-muted-foreground max-w-md mx-auto mt-2">
+                    Start chatting or try one of the examples below to see what I can do.
+                  </p>
+                </div>
               </div>
-              <p className="text-center max-w-md">
-                Hi! I&apos;m here to help qualify your needs. What brings you to our service today?
-              </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-lg">
+                <button
+                  onClick={() => handleSuggestionClick("Analyze market trends for the AI software industry")}
+                  className="flex flex-col items-start p-4 bg-card border rounded-xl hover:bg-accent hover:text-accent-foreground transition-colors text-left"
+                >
+                  <TrendingUp className="w-5 h-5 mb-2 text-primary" />
+                  <span className="font-medium text-sm">Analyze market trends</span>
+                  <span className="text-xs text-muted-foreground mt-1 line-clamp-2">See a breakdown of AI software market trends.</span>
+                </button>
+                <button
+                  onClick={() => handleSuggestionClick("Score a lead for a tech company with 500 employees")}
+                  className="flex flex-col items-start p-4 bg-card border rounded-xl hover:bg-accent hover:text-accent-foreground transition-colors text-left"
+                >
+                  <Building2 className="w-5 h-5 mb-2 text-primary" />
+                  <span className="font-medium text-sm">Score a lead</span>
+                  <span className="text-xs text-muted-foreground mt-1 line-clamp-2">Test out the lead scoring capabilities.</span>
+                </button>
+              </div>
             </div>
           ) : (
-            <>
-              <MessageList messages={messages} isLoading={isLoading} />
-              {error && (
-                <div className="bg-red-500/10 text-red-500 p-4 rounded-xl text-sm mb-4 border border-red-500/20 max-w-2xl mx-auto">
-                  <strong>Error:</strong> {error.message || 'An error occurred during chat.'}
-                  <br />
-                  If you see an API key error, make sure GOOGLE_GENERATIVE_AI_API_KEY is properly set in your Vercel Environment Variables and that you hit Redeploy!
-                </div>
-              )}
-            </>
+            <MessageList 
+              messages={messages} 
+              isLoading={isLoading} 
+              error={error} 
+              reload={reload} 
+            />
           )}
         </div>
       </div>
@@ -131,7 +157,7 @@ export function Chat() {
       </AnimatePresence>
 
       {/* Input Area */}
-      <div className="flex-shrink-0 z-20">
+      <div className="flex-shrink-0 z-20 bg-background/80 backdrop-blur-sm border-t pb-safe">
         <ChatInput
           input={input}
           handleInputChange={handleInputChange}
