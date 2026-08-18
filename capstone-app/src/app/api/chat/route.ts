@@ -25,7 +25,7 @@ export async function POST(req: Request) {
             employeeCount: z.number().describe('The number of employees at the company.'),
             industry: z.string().describe('The industry the company operates in.'),
           }),
-          execute: async ({ companyName, employeeCount, industry }: { companyName: string; employeeCount: number; industry: string }) => {
+          execute: async ({ companyName, employeeCount, industry }) => {
             // Simulate API delay
             await new Promise(resolve => setTimeout(resolve, 2000));
             
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
           parameters: z.object({
             industry: z.string().describe('The industry to analyze (e.g., tech, healthcare, finance)'),
           }),
-          execute: async ({ industry }: { industry: string }) => {
+          execute: async ({ industry }) => {
             // Simulate API delay
             await new Promise(resolve => setTimeout(resolve, 2000));
             
