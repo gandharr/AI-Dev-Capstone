@@ -29,18 +29,18 @@ export async function POST(req: Request) {
           execute: async ({ companyName, employeeCount, industry }: { companyName: string; employeeCount: number; industry: string }) => {
             // Simulate API delay
             await new Promise(resolve => setTimeout(resolve, 2000));
-            
+
             // Intentionally throw an error for testing the error state
             if (companyName.toLowerCase().includes('error')) {
               throw new Error('Failed to score lead: Service unavailable or invalid company data.');
             }
-            
+
             // Basic scoring logic
             let score = 50;
             if (employeeCount > 100) score += 20;
             if (employeeCount > 1000) score += 10;
             if (['software', 'technology', 'saas'].includes(industry.toLowerCase())) score += 20;
-            
+
             return {
               companyName,
               score: Math.min(100, Math.max(0, score)),
@@ -58,12 +58,12 @@ export async function POST(req: Request) {
           execute: async ({ industry }: { industry: string }) => {
             // Simulate API delay
             await new Promise(resolve => setTimeout(resolve, 2000));
-            
+
             // Intentionally throw an error for testing the error state
             if (industry.toLowerCase().includes('error')) {
               throw new Error('Failed to fetch market data: Service unavailable.');
             }
-            
+
             // Generate some mock data for the chart
             const baseValue = Math.floor(Math.random() * 50) + 50;
             const trend = Math.random() > 0.5 ? 'up' : 'down';
@@ -74,7 +74,7 @@ export async function POST(req: Request) {
                 value: Math.max(10, baseValue + (trend === 'up' ? i * 10 : i * -10) + variance),
               };
             });
-            
+
             return {
               industry,
               trend,
