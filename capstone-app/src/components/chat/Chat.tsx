@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const CHAT_STORAGE_KEY = 'capstone_chat_messages';
 
 export function Chat() {
-  const { messages, setMessages, sendMessage, status, stop, error, reload } = useChat({
+  const { messages, setMessages, sendMessage, status, stop, error, regenerate } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat' }),
     // We handle errors gracefully
     onError: (err) => {
@@ -130,7 +130,7 @@ export function Chat() {
               messages={messages} 
               isLoading={isLoading} 
               error={error} 
-              reload={reload} 
+              reload={regenerate} 
             />
           )}
         </div>
