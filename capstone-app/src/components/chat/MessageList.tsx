@@ -14,24 +14,31 @@ interface MessageListProps {
 }
 
 export function MessageList({ messages, isLoading, error, reload }: MessageListProps) {
-  // Check if the last message is an empty assistant message
-  const lastMessage = messages[messages.length - 1];
-  const isLastMessageEmptyAssistant = 
-    lastMessage?.role === 'assistant' && 
-    !lastMessage.content && 
-    (!lastMessage.parts || lastMessage.parts.length === 0);
+  // Helper to determine if an assistant message is completely empty
+  // meaning no tool calls and no text content
+  const isAssistantEmpty = (m?: UIMessage) => {
+    if (m?.role !== 'assistant') return false;
+    
+    if (!m.parts || m.parts.length === 0) return true;
+    
+    // Check if there are any non-empty text parts or any tool calls
+    const hasContent = m.parts.some((p: any) => {
+      if (p.type === 'tool-invocation' || p.toolName) return true;
+      if (p.type === 'text' && p.text && p.text.length > 0) return true;
+      return false;
+    });
+    
+    return !hasContent;
+  };
+
+  const isLastMessageEmptyAssistant = isAssistantEmpty(messages[messages.length - 1]);
 
   // Show thinking indicator if waiting for AI to respond (after user message) 
   // or if the AI message has been created but is still empty
-  const showThinking = isLoading && (lastMessage?.role === 'user' || isLastMessageEmptyAssistant);
+  const showThinking = isLoading && (messages[messages.length - 1]?.role === 'user' || isLastMessageEmptyAssistant);
 
   // Filter out empty assistant messages so they don't render as tiny empty bubbles
-  const visibleMessages = messages.filter(m => {
-    if (m.role === 'assistant' && !m.content && (!m.parts || m.parts.length === 0)) {
-      return false;
-    }
-    return true;
-  });
+  const visibleMessages = messages.filter(m => !isAssistantEmpty(m));
 
   return (
     <div className="flex flex-col space-y-6 pb-4">
