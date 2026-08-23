@@ -14,18 +14,22 @@ interface MessageListProps {
 }
 
 export function MessageList({ messages, isLoading, error, reload }: MessageListProps) {
-  // Helper to determine if an assistant message is completely empty
-  // meaning no tool calls and no text content
   const isAssistantEmpty = (m?: UIMessage) => {
     if (m?.role !== 'assistant') return false;
     
-    if (!m.parts || m.parts.length === 0) return true;
+    const content = (m as any).content;
+    if (content && typeof content === 'string' && content.length > 0) return false;
     
-    // Check if there are any non-empty text parts or any tool calls
+    if (!m.parts || m.parts.length === 0) {
+      return !content; // If no parts and no content, it's empty
+    }
+    
+    // Check if there are any non-empty text parts or ANY non-text parts (like tool-call)
     const hasContent = m.parts.some((p: any) => {
-      if (p.type === 'tool-invocation' || p.toolName) return true;
-      if (p.type === 'text' && p.text && p.text.length > 0) return true;
-      return false;
+      if (p.type === 'text') {
+        return p.text && p.text.length > 0;
+      }
+      return true; // tool-call, reasoning, etc. all count as content
     });
     
     return !hasContent;
