@@ -14,16 +14,29 @@ interface MessageListProps {
 }
 
 export function MessageList({ messages, isLoading, error, reload }: MessageListProps) {
-  // We want to show the thinking indicator only if we are loading and the 
-  // last message is from the user (meaning the AI hasn't started streaming its response yet).
-  // Once the AI starts streaming, its own message will be added to the list,
-  // and the last message will be 'assistant'.
-  const showThinking = isLoading && messages[messages.length - 1]?.role === 'user';
+  // Check if the last message is an empty assistant message
+  const lastMessage = messages[messages.length - 1];
+  const isLastMessageEmptyAssistant = 
+    lastMessage?.role === 'assistant' && 
+    !lastMessage.content && 
+    (!lastMessage.parts || lastMessage.parts.length === 0);
+
+  // Show thinking indicator if waiting for AI to respond (after user message) 
+  // or if the AI message has been created but is still empty
+  const showThinking = isLoading && (lastMessage?.role === 'user' || isLastMessageEmptyAssistant);
+
+  // Filter out empty assistant messages so they don't render as tiny empty bubbles
+  const visibleMessages = messages.filter(m => {
+    if (m.role === 'assistant' && !m.content && (!m.parts || m.parts.length === 0)) {
+      return false;
+    }
+    return true;
+  });
 
   return (
     <div className="flex flex-col space-y-6 pb-4">
       <AnimatePresence mode="popLayout">
-        {messages.map((message) => (
+        {visibleMessages.map((message) => (
           <MessageBubble
             key={message.id}
             message={message}
