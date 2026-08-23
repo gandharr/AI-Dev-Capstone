@@ -19,8 +19,8 @@ export default async function HealthPage() {
       throw new Error(`Failed to fetch health data: ${res.status}`);
     }
     healthData = await res.json();
-  } catch (e: any) {
-    error = e.message;
+  } catch (e: unknown) {
+    error = e instanceof Error ? e.message : String(e);
   }
 
   return (

@@ -1,0 +1,11 @@
+{
+  "remoteName": "origin",
+  "projects": [
+    {
+      "id": "prj_Sau7jwFyyas2EUJKMarxSr7enOts",
+      "name": "ai-dev-capstone",
+      "directory": "capstone-app",
+      "orgId": "team_F9fVazMRotT6mVVZgaXGdGKs"
+    }
+  ]
+}
