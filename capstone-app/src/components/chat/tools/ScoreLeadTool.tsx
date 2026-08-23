@@ -16,7 +16,7 @@ export function ScoreLeadTool({ toolInvocation }: ScoreLeadToolProps) {
   return (
     <motion.div layout className="my-4 border rounded-xl overflow-hidden bg-card text-card-foreground shadow-sm relative">
       <AnimatePresence mode="popLayout">
-        {state === 'input-streaming' && (
+        {state === 'partial-call' && (
           <motion.div
             layout
             key="input-streaming"
@@ -31,7 +31,7 @@ export function ScoreLeadTool({ toolInvocation }: ScoreLeadToolProps) {
           </motion.div>
         )}
 
-        {state === 'input-available' && (
+        {state === 'call' && (
           <motion.div
             layout
             key="input-available"
@@ -51,7 +51,7 @@ export function ScoreLeadTool({ toolInvocation }: ScoreLeadToolProps) {
           </motion.div>
         )}
 
-        {state === 'output-available' && (
+        {state === 'result' && !errorText && (
           <motion.div
             layout
             key="output-available"
@@ -94,7 +94,7 @@ export function ScoreLeadTool({ toolInvocation }: ScoreLeadToolProps) {
           </motion.div>
         )}
 
-        {state === 'output-error' && (
+        {state === 'result' && errorText && (
           <motion.div
             layout
             key="output-error"

@@ -20,6 +20,10 @@ export function MessageList({ messages, isLoading, error, reload }: MessageListP
     const content = (m as any).content;
     if (content && typeof content === 'string' && content.length > 0) return false;
     
+    // In AI SDK, tool calls are stored in toolInvocations array
+    const toolInvocations = (m as any).toolInvocations;
+    if (toolInvocations && toolInvocations.length > 0) return false;
+    
     if (!m.parts || m.parts.length === 0) {
       return !content; // If no parts and no content, it's empty
     }

@@ -87,7 +87,7 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
 
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {message.parts?.map((part: any, index: number) => {
-            if (part.type === 'tool-invocation' || part.toolName) {
+            if (part.type === 'tool-invocation' || part.toolName || part.type === 'tool-call') {
               if (part.toolName === 'scoreLead') {
                 return (
                   <div key={part.toolCallId || index}>
