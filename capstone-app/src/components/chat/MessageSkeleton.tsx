@@ -18,10 +18,10 @@ export function MessageSkeleton() {
           <Bot size={16} />
         </div>
         
-        <div className="px-4 py-3 rounded-2xl text-sm leading-relaxed w-64 bg-muted/50 text-foreground rounded-bl-sm border border-border/50 space-y-2.5">
-          <div className="h-4 bg-foreground/10 rounded animate-pulse w-3/4"></div>
-          <div className="h-4 bg-foreground/10 rounded animate-pulse w-full"></div>
-          <div className="h-4 bg-foreground/10 rounded animate-pulse w-5/6"></div>
+        <div className="flex flex-col px-4 py-3 rounded-2xl text-sm leading-relaxed min-w-[200px] w-full max-w-[250px] bg-muted/50 text-foreground rounded-bl-sm border border-border/50 space-y-2">
+          <div className="h-3.5 bg-muted-foreground/20 rounded animate-pulse w-3/4"></div>
+          <div className="h-3.5 bg-muted-foreground/20 rounded animate-pulse w-full"></div>
+          <div className="h-3.5 bg-muted-foreground/20 rounded animate-pulse w-5/6"></div>
         </div>
       </div>
     </motion.div>
