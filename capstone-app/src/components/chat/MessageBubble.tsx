@@ -85,31 +85,57 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
             {message.parts?.filter((p: { type: string }) => p.type === 'text').map((p: { type: string, text?: string }) => p.text).join('\n') || ''}
           </ReactMarkdown>
 
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {message.parts?.map((part: any, index: number) => {
-            if (part.type === 'tool-invocation' || part.toolName || part.type === 'tool-call') {
-              if (part.toolName === 'scoreLead') {
+          {/* Render grouped tool invocations */}
+          {(() => {
+            if (!message.parts) return null;
+            const toolInvocations: Record<string, any> = {};
+            
+            message.parts.forEach((part: any) => {
+              if (part.type === 'tool-call') {
+                toolInvocations[part.toolCallId] = {
+                  ...toolInvocations[part.toolCallId],
+                  state: toolInvocations[part.toolCallId]?.state === 'result' ? 'result' : 'call',
+                  toolCallId: part.toolCallId,
+                  toolName: part.toolName,
+                  input: part.args,
+                };
+              } else if (part.type === 'tool-result') {
+                toolInvocations[part.toolCallId] = {
+                  ...toolInvocations[part.toolCallId],
+                  state: 'result',
+                  toolCallId: part.toolCallId,
+                  toolName: part.toolName,
+                  output: part.result,
+                  errorText: part.isError ? 'An error occurred' : undefined,
+                };
+              } else if (part.type === 'tool-invocation') {
+                // Fallback for older SDK versions if they somehow appear
+                toolInvocations[part.toolCallId] = part;
+              }
+            });
+
+            return Object.values(toolInvocations).map((toolInvocation: any, index: number) => {
+              if (toolInvocation.toolName === 'scoreLead') {
                 return (
-                  <div key={part.toolCallId || index}>
-                    <ScoreLeadTool toolInvocation={part} />
+                  <div key={toolInvocation.toolCallId || index}>
+                    <ScoreLeadTool toolInvocation={toolInvocation} />
                   </div>
                 );
               }
-              if (part.toolName === 'analyzeMarketTrends') {
+              if (toolInvocation.toolName === 'analyzeMarketTrends') {
                 return (
-                  <div key={part.toolCallId || index}>
-                    <AnalyzeMarketTool toolInvocation={part} />
+                  <div key={toolInvocation.toolCallId || index}>
+                    <AnalyzeMarketTool toolInvocation={toolInvocation} />
                   </div>
                 );
               }
               return (
-                <div key={part.toolCallId || index} className="text-muted-foreground text-sm italic my-2">
-                  Calling tool {part.toolName}...
+                <div key={toolInvocation.toolCallId || index} className="text-muted-foreground text-sm italic my-2">
+                  Calling tool {toolInvocation.toolName}...
                 </div>
               );
-            }
-            return null;
-          })}
+            });
+          })()}
         </div>
       </div>
     </motion.div>
