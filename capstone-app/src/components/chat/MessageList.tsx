@@ -17,15 +17,12 @@ export function MessageList({ messages, isLoading, error, reload }: MessageListP
   const isAssistantEmpty = (m?: UIMessage) => {
     if (m?.role !== 'assistant') return false;
     
-    const content = m.content;
-    if (content && typeof content === 'string' && content.length > 0) return false;
-    
     // In AI SDK, tool calls are stored in toolInvocations array
-    const toolInvocations = (m as Record<string, unknown>).toolInvocations as unknown[] | undefined;
+    const toolInvocations = (m as unknown as Record<string, unknown>).toolInvocations as unknown[] | undefined;
     if (toolInvocations && toolInvocations.length > 0) return false;
     
     if (!m.parts || m.parts.length === 0) {
-      return !content; // If no parts and no content, it's empty
+      return true; // If no parts, it's empty
     }
     
     // Check if there are any non-empty text parts or ANY non-text parts (like tool-call)
