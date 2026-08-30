@@ -10,7 +10,20 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
 
     console.log('Incoming messages:', JSON.stringify(messages, null, 2));
-    const coreMessages = await convertToModelMessages(messages); // Pass messages directly so tools work
+
+    // Ensure all messages have a parts array for convertToModelMessages compat
+    const formattedMessages = (messages || []).map((m: { id?: string; role: string; content?: string; parts?: Array<{ type: string; text?: string }> }) => {
+      if (!m.parts || m.parts.length === 0) {
+        return {
+          id: m.id,
+          role: m.role,
+          parts: [{ type: 'text', text: m.content || '' }],
+        };
+      }
+      return m;
+    });
+
+    const coreMessages = await convertToModelMessages(formattedMessages); // Pass messages directly so tools work
     console.log('Core messages:', JSON.stringify(coreMessages, null, 2));
 
     const result = await streamText({
