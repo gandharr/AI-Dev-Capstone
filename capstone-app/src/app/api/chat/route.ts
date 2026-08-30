@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     console.log('Core messages:', JSON.stringify(coreMessages, null, 2));
 
     let result;
-    let lastError: any = null;
+    let lastError: Error | null = null;
 
     for (const modelName of GEMINI_MODEL_FALLBACKS) {
       try {
@@ -108,9 +108,10 @@ export async function POST(req: Request) {
 
         // If streamText succeeded to initialize without throwing, break the fallback loop
         break;
-      } catch (err: any) {
-        console.warn(`Model ${modelName} failed initialization:`, err.message || err);
-        lastError = err;
+      } catch (err) {
+        const errorVal = err as Error;
+        console.warn(`Model ${modelName} failed initialization:`, errorVal.message || errorVal);
+        lastError = errorVal;
       }
     }
 

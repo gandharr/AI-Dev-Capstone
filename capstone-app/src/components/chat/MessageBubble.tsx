@@ -88,68 +88,61 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
           {/* Render grouped tool invocations */}
           {(() => {
             if (!message.parts) return null;
-            
-            interface ReconstructedToolInvocation {
-              state: 'call' | 'result';
-              toolCallId: string;
-              toolName: string;
-              input?: unknown;
-              output?: unknown;
-              errorText?: string;
-            }
 
-            const toolInvocations: Record<string, ReconstructedToolInvocation> = {};
-            
-            message.parts.forEach((part: { type: string; toolCallId?: string; toolName?: string; args?: unknown; result?: unknown; isError?: boolean }) => {
-              const callId = part.toolCallId;
-              if (!callId) return;
+            return message.parts
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              .filter((part: any) => part.type.startsWith('tool-') || part.type === 'dynamic-tool')
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              .map((part: any, index) => {
+                const toolName = part.type.startsWith('tool-') ? part.type.slice(5) : part.toolName;
+                const toolCallId = part.toolCallId;
+                
+                // Map the new AI SDK 4 state to the local component state
+                let localState: 'partial-call' | 'call' | 'result' = 'partial-call';
+                if (part.state === 'output-available' || part.state === 'output-error' || part.state === 'output-denied') {
+                  localState = 'result';
+                } else if (part.state === 'input-available' || part.state === 'approval-requested' || part.state === 'approval-responded') {
+                  localState = 'call';
+                } else if (part.state === 'input-streaming') {
+                  localState = 'partial-call';
+                }
 
-              if (part.type === 'tool-call') {
-                toolInvocations[callId] = {
-                  ...toolInvocations[callId],
-                  state: toolInvocations[callId]?.state === 'result' ? 'result' : 'call',
-                  toolCallId: callId,
-                  toolName: part.toolName || '',
-                  input: part.args,
+                // Construct a toolInvocation compatible object
+                const toolInvocation = {
+                  state: localState,
+                  toolCallId,
+                  toolName,
+                  input: part.input,
+                  output: part.output,
+                  errorText: part.state === 'output-error' ? (part.errorText || 'An error occurred during execution.') : undefined,
                 };
-              } else if (part.type === 'tool-result') {
-                toolInvocations[callId] = {
-                  ...toolInvocations[callId],
-                  state: 'result',
-                  toolCallId: callId,
-                  toolName: part.toolName || '',
-                  output: part.result,
-                  errorText: part.isError ? 'An error occurred' : undefined,
-                };
-              }
-            });
 
-            return Object.values(toolInvocations).map((toolInvocation, index) => {
-              if (toolInvocation.toolName === 'scoreLead') {
+                if (toolName === 'scoreLead') {
+                  return (
+                    <div key={toolCallId || index}>
+                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                      <ScoreLeadTool toolInvocation={toolInvocation as any} />
+                    </div>
+                  );
+                }
+                if (toolName === 'analyzeMarketTrends') {
+                  return (
+                    <div key={toolCallId || index}>
+                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                      <AnalyzeMarketTool toolInvocation={toolInvocation as any} />
+                    </div>
+                  );
+                }
                 return (
-                  <div key={toolInvocation.toolCallId || index}>
-                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                    <ScoreLeadTool toolInvocation={toolInvocation as any} />
+                  <div key={toolCallId || index} className="text-muted-foreground text-sm italic my-2">
+                    Calling tool {toolName}...
                   </div>
                 );
-              }
-              if (toolInvocation.toolName === 'analyzeMarketTrends') {
-                return (
-                  <div key={toolInvocation.toolCallId || index}>
-                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                    <AnalyzeMarketTool toolInvocation={toolInvocation as any} />
-                  </div>
-                );
-              }
-              return (
-                <div key={toolInvocation.toolCallId || index} className="text-muted-foreground text-sm italic my-2">
-                  Calling tool {toolInvocation.toolName}...
-                </div>
-              );
-            });
+              });
           })()}
         </div>
       </div>
     </motion.div>
   );
 });
+
