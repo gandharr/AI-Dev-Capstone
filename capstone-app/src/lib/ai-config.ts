@@ -7,8 +7,15 @@ import { google } from "@ai-sdk/google";
  * Future extensions (like FE-07) can build on this module.
  */
 
-// We use gemini-1.5-flash as the default capable model for this chat
-export const chatModel = google('gemini-3.5-flash');
+// Prioritized list of Gemini models to fall back on in case of deprecation or expiration
+export const GEMINI_MODEL_FALLBACKS = [
+  'gemini-2.5-flash',
+  'gemini-2.0-flash',
+  'gemini-1.5-flash',
+  'gemini-3.5-flash'
+];
+
+export const chatModel = google(GEMINI_MODEL_FALLBACKS[0]);
 
 export const chatSystemPrompt = `
 You are a helpful and professional qualification assistant. 

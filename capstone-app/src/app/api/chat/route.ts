@@ -1,6 +1,7 @@
 import { streamText, tool, convertToModelMessages } from 'ai';
 import { z } from 'zod';
-import { chatModel, chatSystemPrompt } from '@/lib/ai-config';
+import { google } from '@ai-sdk/google';
+import { GEMINI_MODEL_FALLBACKS, chatSystemPrompt } from '@/lib/ai-config';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -26,77 +27,96 @@ export async function POST(req: Request) {
     const coreMessages = await convertToModelMessages(formattedMessages); // Pass messages directly so tools work
     console.log('Core messages:', JSON.stringify(coreMessages, null, 2));
 
-    const result = await streamText({
-      model: chatModel,
-      system: chatSystemPrompt,
-      messages: coreMessages,
-      tools: {
-        scoreLead: tool({
-          description: 'Score a lead based on company information. Use this once you know the company name, employee count, and industry.',
-          parameters: z.object({
-            companyName: z.string().describe('The name of the company.'),
-            employeeCount: z.number().describe('The number of employees at the company.'),
-            industry: z.string().describe('The industry the company operates in.'),
-          }),
-          // @ts-expect-error - AI SDK Tool params type mismatch
-          execute: async ({ companyName, employeeCount, industry }: { companyName: string; employeeCount: number; industry: string }) => {
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 2000));
+    let result;
+    let lastError: any = null;
 
-            // Intentionally throw an error for testing the error state
-            if (companyName.toLowerCase().includes('error')) {
-              throw new Error('Failed to score lead: Service unavailable or invalid company data.');
-            }
+    for (const modelName of GEMINI_MODEL_FALLBACKS) {
+      try {
+        console.log(`Trying Gemini model: ${modelName}`);
+        const model = google(modelName);
+        result = await streamText({
+          model,
+          system: chatSystemPrompt,
+          messages: coreMessages,
+          tools: {
+            scoreLead: tool({
+              description: 'Score a lead based on company information. Use this once you know the company name, employee count, and industry.',
+              parameters: z.object({
+                companyName: z.string().describe('The name of the company.'),
+                employeeCount: z.number().describe('The number of employees at the company.'),
+                industry: z.string().describe('The industry the company operates in.'),
+              }),
+              // @ts-expect-error - AI SDK Tool params type mismatch
+              execute: async ({ companyName, employeeCount, industry }: { companyName: string; employeeCount: number; industry: string }) => {
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
 
-            // Basic scoring logic
-            let score = 50;
-            if (employeeCount > 100) score += 20;
-            if (employeeCount > 1000) score += 10;
-            if (['software', 'technology', 'saas'].includes(industry.toLowerCase())) score += 20;
+                // Intentionally throw an error for testing the error state
+                if (companyName.toLowerCase().includes('error')) {
+                  throw new Error('Failed to score lead: Service unavailable or invalid company data.');
+                }
 
-            return {
-              companyName,
-              score: Math.min(100, Math.max(0, score)),
-              tier: score >= 80 ? 'Tier 1' : score >= 60 ? 'Tier 2' : 'Tier 3',
-              timestamp: new Date().toISOString(),
-            };
+                // Basic scoring logic
+                let score = 50;
+                if (employeeCount > 100) score += 20;
+                if (employeeCount > 1000) score += 10;
+                if (['software', 'technology', 'saas'].includes(industry.toLowerCase())) score += 20;
+
+                return {
+                  companyName,
+                  score: Math.min(100, Math.max(0, score)),
+                  tier: score >= 80 ? 'Tier 1' : score >= 60 ? 'Tier 2' : 'Tier 3',
+                  timestamp: new Date().toISOString(),
+                };
+              },
+            }),
+            analyzeMarketTrends: tool({
+              description: 'Analyze market trends for a specific industry or sector. Use this when asked about trends, growth, or market charts.',
+              parameters: z.object({
+                industry: z.string().describe('The industry to analyze (e.g., tech, healthcare, finance)'),
+              }),
+              // @ts-expect-error - AI SDK Tool params type mismatch
+              execute: async ({ industry }: { industry: string }) => {
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                // Intentionally throw an error for testing the error state
+                if (industry.toLowerCase().includes('error')) {
+                  throw new Error('Failed to fetch market data: Service unavailable.');
+                }
+
+                // Generate some mock data for the chart
+                const baseValue = Math.floor(Math.random() * 50) + 50;
+                const trend = Math.random() > 0.5 ? 'up' : 'down';
+                const dataPoints = Array.from({ length: 6 }).map((_, i) => {
+                  const variance = Math.floor(Math.random() * 20) - 10;
+                  return {
+                    month: new Date(new Date().setMonth(new Date().getMonth() - (5 - i))).toLocaleString('default', { month: 'short' }),
+                    value: Math.max(10, baseValue + (trend === 'up' ? i * 10 : i * -10) + variance),
+                  };
+                });
+
+                return {
+                  industry,
+                  trend,
+                  dataPoints,
+                };
+              },
+            }),
           },
-        }),
-        analyzeMarketTrends: tool({
-          description: 'Analyze market trends for a specific industry or sector. Use this when asked about trends, growth, or market charts.',
-          parameters: z.object({
-            industry: z.string().describe('The industry to analyze (e.g., tech, healthcare, finance)'),
-          }),
-          // @ts-expect-error - AI SDK Tool params type mismatch
-          execute: async ({ industry }: { industry: string }) => {
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 2000));
+        });
 
-            // Intentionally throw an error for testing the error state
-            if (industry.toLowerCase().includes('error')) {
-              throw new Error('Failed to fetch market data: Service unavailable.');
-            }
+        // If streamText succeeded to initialize without throwing, break the fallback loop
+        break;
+      } catch (err: any) {
+        console.warn(`Model ${modelName} failed initialization:`, err.message || err);
+        lastError = err;
+      }
+    }
 
-            // Generate some mock data for the chart
-            const baseValue = Math.floor(Math.random() * 50) + 50;
-            const trend = Math.random() > 0.5 ? 'up' : 'down';
-            const dataPoints = Array.from({ length: 6 }).map((_, i) => {
-              const variance = Math.floor(Math.random() * 20) - 10;
-              return {
-                month: new Date(new Date().setMonth(new Date().getMonth() - (5 - i))).toLocaleString('default', { month: 'short' }),
-                value: Math.max(10, baseValue + (trend === 'up' ? i * 10 : i * -10) + variance),
-              };
-            });
-
-            return {
-              industry,
-              trend,
-              dataPoints,
-            };
-          },
-        }),
-      },
-    });
+    if (!result) {
+      throw lastError || new Error('All Gemini model fallbacks failed.');
+    }
 
     return result.toUIMessageStreamResponse();
   } catch (error) {
