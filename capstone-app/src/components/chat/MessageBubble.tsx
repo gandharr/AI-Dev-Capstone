@@ -88,44 +88,56 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
           {/* Render grouped tool invocations */}
           {(() => {
             if (!message.parts) return null;
-            const toolInvocations: Record<string, any> = {};
             
-            message.parts.forEach((part: any) => {
+            interface ReconstructedToolInvocation {
+              state: 'call' | 'result';
+              toolCallId: string;
+              toolName: string;
+              input?: unknown;
+              output?: unknown;
+              errorText?: string;
+            }
+
+            const toolInvocations: Record<string, ReconstructedToolInvocation> = {};
+            
+            message.parts.forEach((part: { type: string; toolCallId?: string; toolName?: string; args?: unknown; result?: unknown; isError?: boolean }) => {
+              const callId = part.toolCallId;
+              if (!callId) return;
+
               if (part.type === 'tool-call') {
-                toolInvocations[part.toolCallId] = {
-                  ...toolInvocations[part.toolCallId],
-                  state: toolInvocations[part.toolCallId]?.state === 'result' ? 'result' : 'call',
-                  toolCallId: part.toolCallId,
-                  toolName: part.toolName,
+                toolInvocations[callId] = {
+                  ...toolInvocations[callId],
+                  state: toolInvocations[callId]?.state === 'result' ? 'result' : 'call',
+                  toolCallId: callId,
+                  toolName: part.toolName || '',
                   input: part.args,
                 };
               } else if (part.type === 'tool-result') {
-                toolInvocations[part.toolCallId] = {
-                  ...toolInvocations[part.toolCallId],
+                toolInvocations[callId] = {
+                  ...toolInvocations[callId],
                   state: 'result',
-                  toolCallId: part.toolCallId,
-                  toolName: part.toolName,
+                  toolCallId: callId,
+                  toolName: part.toolName || '',
                   output: part.result,
                   errorText: part.isError ? 'An error occurred' : undefined,
                 };
-              } else if (part.type === 'tool-invocation') {
-                // Fallback for older SDK versions if they somehow appear
-                toolInvocations[part.toolCallId] = part;
               }
             });
 
-            return Object.values(toolInvocations).map((toolInvocation: any, index: number) => {
+            return Object.values(toolInvocations).map((toolInvocation, index) => {
               if (toolInvocation.toolName === 'scoreLead') {
                 return (
                   <div key={toolInvocation.toolCallId || index}>
-                    <ScoreLeadTool toolInvocation={toolInvocation} />
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                    <ScoreLeadTool toolInvocation={toolInvocation as any} />
                   </div>
                 );
               }
               if (toolInvocation.toolName === 'analyzeMarketTrends') {
                 return (
                   <div key={toolInvocation.toolCallId || index}>
-                    <AnalyzeMarketTool toolInvocation={toolInvocation} />
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                    <AnalyzeMarketTool toolInvocation={toolInvocation as any} />
                   </div>
                 );
               }

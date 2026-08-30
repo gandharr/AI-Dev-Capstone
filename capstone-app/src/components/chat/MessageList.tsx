@@ -17,11 +17,11 @@ export function MessageList({ messages, isLoading, error, reload }: MessageListP
   const isAssistantEmpty = (m?: UIMessage) => {
     if (m?.role !== 'assistant') return false;
     
-    const content = (m as any).content;
+    const content = m.content;
     if (content && typeof content === 'string' && content.length > 0) return false;
     
     // In AI SDK, tool calls are stored in toolInvocations array
-    const toolInvocations = (m as any).toolInvocations;
+    const toolInvocations = (m as Record<string, unknown>).toolInvocations as unknown[] | undefined;
     if (toolInvocations && toolInvocations.length > 0) return false;
     
     if (!m.parts || m.parts.length === 0) {
@@ -29,7 +29,7 @@ export function MessageList({ messages, isLoading, error, reload }: MessageListP
     }
     
     // Check if there are any non-empty text parts or ANY non-text parts (like tool-call)
-    const hasContent = m.parts.some((p: any) => {
+    const hasContent = m.parts.some((p: { type: string; text?: string }) => {
       if (p.type === 'text') {
         return p.text && p.text.length > 0;
       }
