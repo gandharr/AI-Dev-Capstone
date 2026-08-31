@@ -1,0 +1,11 @@
+In my capstone project, I built a chatbot that qualifies business leads. A really interesting part of the build is how the AI doesn't just reply with plain text, but actually triggers and renders custom visual cards (like a green Lead Score badge or a red Error card) directly inside the chat bubbles.
+
+Here is how it works in plain words:
+
+- The AI requests a tool: When a user types "Score a lead for Google...", the AI backend realizes it needs to run a calculation. It sends a message back to the browser containing a hidden command to run a tool called scoreLead.
+- The browser catches it: In my frontend code (MessageBubble.tsx), the chat component intercepts this message. Instead of displaying it as text, it checks the tool's status:
+  - If the tool is still running, it displays a loading skeleton saying "Scoring lead...".
+  - If the tool succeeds, it dynamically replaces the loader with a detailed lead scoring results card.
+  - If it fails (like when the user types "Error Company"), it catches the error and renders a red card showing that the process failed.
+
+This approach keeps the interface clean and interactive, giving the user real-time visual feedback rather than just dry chatbot text.
