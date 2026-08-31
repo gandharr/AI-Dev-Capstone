@@ -38,6 +38,7 @@ export async function POST(req: Request) {
           model,
           system: chatSystemPrompt,
           messages: coreMessages,
+          maxRetries: 1, // Fail fast on rate limits/overload instead of hanging for 30s
           tools: {
             scoreLead: tool({
               description: 'Score a lead based on company information. Use this once you know the company name, employee count, and industry.',
@@ -48,8 +49,8 @@ export async function POST(req: Request) {
               }),
               // @ts-expect-error - AI SDK Tool params type mismatch
               execute: async ({ companyName, employeeCount, industry }: { companyName: string; employeeCount: number; industry: string }) => {
-                // Simulate API delay
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                // Simulate API delay (reduced to 100ms to avoid Vercel timeouts)
+                await new Promise(resolve => setTimeout(resolve, 100));
 
                 // Intentionally throw an error for testing the error state
                 if (companyName.toLowerCase().includes('error')) {
@@ -77,8 +78,8 @@ export async function POST(req: Request) {
               }),
               // @ts-expect-error - AI SDK Tool params type mismatch
               execute: async ({ industry }: { industry: string }) => {
-                // Simulate API delay
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                // Simulate API delay (reduced to 100ms to avoid Vercel timeouts)
+                await new Promise(resolve => setTimeout(resolve, 100));
 
                 // Intentionally throw an error for testing the error state
                 if (industry.toLowerCase().includes('error')) {
