@@ -9,8 +9,8 @@ import { google } from "@ai-sdk/google";
 
 // Prioritized list of Gemini models to fall back on in case of deprecation or expiration
 export const GEMINI_MODEL_FALLBACKS = [
-  'gemini-3.6-flash',
   'gemini-3.5-flash',
+  'gemini-3.6-flash',
   'gemini-2.5-flash',
   'gemini-2.0-flash',
   'gemini-1.5-flash'
