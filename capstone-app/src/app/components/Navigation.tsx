@@ -32,9 +32,15 @@ export default function Navigation() {
               </Link>
               <Link
                 href="/chat"
-                className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-primary hover:border-primary/80 hover:text-primary/80"
+                className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-muted-foreground hover:border-border hover:text-foreground"
               >
                 Chat
+              </Link>
+              <Link
+                href="/buttons"
+                className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-primary hover:border-primary/80 hover:text-primary/80"
+              >
+                Buttons Demo
               </Link>
             </div>
           </div>
