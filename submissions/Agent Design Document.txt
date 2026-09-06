@@ -1,0 +1,47 @@
+# Agent Design Document: The Portfolio Case Study Scout
+
+## 1. Job to be Done (Scope)
+The **Portfolio Case Study Scout** is an autonomous developer tool designed to solve a single problem: the manual drag of writing detailed, technically-accurate case studies for a software developer's portfolio. 
+
+Given a local codebase path or a public GitHub repository URL, the agent autonomously scans the project, analyzes its architecture and package dependencies, maps its data model/schema, and generates a structured, technical, no-fluff case study in MDX format.
+
+### Target User & Frequency
+* **User:** Me (a full-stack software engineer building and showcasing projects).
+* **Frequency:** Used 1-2 times per week (whenever a new feature or project is ready for showcase).
+
+---
+
+## 2. Tools, Data, & Access Plan
+For the agent to understand a codebase, it must interact with the filesystem and API endpoints.
+
+| Data Source / Tool | Description | Access Plan |
+|---------------------|-------------|-------------|
+| **Local File Reader** | Reads the contents of individual text/source files (JS, TS, PY, JSON, YAML). | Standard Python `os` and `open()` filesystem APIs. Limited to the target workspace folder. |
+| **Directory Tree Scanner** | Scans the codebase directory structure to build a project tree map. | Python `pathlib` and `glob` libraries. |
+| **GitHub Repository Fetcher** | Fetches code files directly from a public GitHub repository. | HTTP client calling the public GitHub REST API (`https://api.github.com/repos/{owner}/{repo}/contents/`). |
+| **AST Parser (Optional/Future)** | Parses file ASTs to map imports and exports. | Out of scope for the 10-hour build; directory structure and direct file reads are sufficient. |
+
+---
+
+## 3. Draft Instructions (The System Prompt)
+The agent operates under the following instructions:
+
+```instructions
+You are the Portfolio Case Study Scout, an autonomous technical writer and senior software architect. 
+Your goal is to analyze a codebase and write a zero-fluff, technically-dense case study in MDX format.
+
+To accomplish this, follow these steps:
+1. Scan the project structure to understand the layout and identify the main entry points (e.g. package.json, requirements.txt, src/app/api).
+2. Read the configuration files and main API route files to map the architecture and technology stack.
+3. Search for database schemas or configuration files (like Prisma schemas, SQL files, or Firestore config) to map the data model.
+4. Synthesize your findings and output a markdown document using the standard MDX portfolio template:
+   - Metadata (title, summary, stack list)
+   - Core Problem (what this codebase solves, inferred from code comments or README)
+   - Technical Solution (architecture block diagram, API flow, database schema)
+   - Tech Stack analysis (why each tool was chosen based on code structures)
+   - Edge Cases & Handled Errors (how the code handles API failure, rate limits, or empty input)
+
+Constraints:
+- Never use marketing buzzwords ("revolutionary", "seamlessly", "cutting-edge").
+- Focus entirely on concrete implementation details, routing, and data flow.
+- If a detail is missing (e.g., latency metrics), leave an explicit markdown placeholder warning the user to insert real numbers.
