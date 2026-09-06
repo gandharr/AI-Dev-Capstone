@@ -41,17 +41,17 @@ export function Chat() {
     }
   };
 
-  const [isMounted, setIsMounted] = useState(false);
   const { scrollRef, isAtBottom, scrollToBottom } = useAutoScroll<HTMLDivElement>();
 
   // Load from local storage on mount
   useEffect(() => {
-    // eslint-disable-next-line
-    setIsMounted(true);
     try {
       const saved = localStorage.getItem(CHAT_STORAGE_KEY);
       if (saved) {
-        setMessages(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setMessages(parsed);
+        }
       }
     } catch (err) {
       console.error('Failed to load chat history:', err);
@@ -60,10 +60,10 @@ export function Chat() {
 
   // Save to local storage on message change
   useEffect(() => {
-    if (isMounted) {
+    if (messages && messages.length > 0) {
       localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
     }
-  }, [messages, isMounted]);
+  }, [messages]);
 
   // Auto-scroll logic when messages update
   useEffect(() => {
@@ -71,10 +71,6 @@ export function Chat() {
       scrollToBottom();
     }
   }, [messages, isAtBottom, scrollToBottom]);
-
-  if (!isMounted) {
-    return null; // Prevent hydration mismatch
-  }
 
   return (
     <div className="flex flex-col h-[100dvh] bg-background overscroll-none">

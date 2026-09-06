@@ -17,10 +17,14 @@ export function useAutoScroll<T extends HTMLElement>() {
   const scrollToBottom = useCallback((smooth = true) => {
     if (!scrollRef.current) return;
     
-    scrollRef.current.scrollTo({
-      top: scrollRef.current.scrollHeight,
-      behavior: smooth ? 'smooth' : 'auto',
-    });
+    if (typeof scrollRef.current.scrollTo === 'function') {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: smooth ? 'smooth' : 'auto',
+      });
+    } else {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
     // Optimistically set to true to prevent scroll jumps
     setIsAtBottom(true);
   }, []);

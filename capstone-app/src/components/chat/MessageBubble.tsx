@@ -97,13 +97,23 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
                 const toolName = part.type.startsWith('tool-') ? part.type.slice(5) : part.toolName;
                 const toolCallId = part.toolCallId;
                 
-                // Map the new AI SDK 4 state to the local component state
+                // Map the new AI SDK 4 state or legacy state to the local component state
                 let localState: 'partial-call' | 'call' | 'result' = 'partial-call';
-                if (part.state === 'output-available' || part.state === 'output-error' || part.state === 'output-denied') {
+                if (
+                  part.state === 'output-available' ||
+                  part.state === 'output-error' ||
+                  part.state === 'output-denied' ||
+                  part.state === 'result'
+                ) {
                   localState = 'result';
-                } else if (part.state === 'input-available' || part.state === 'approval-requested' || part.state === 'approval-responded') {
+                } else if (
+                  part.state === 'input-available' ||
+                  part.state === 'approval-requested' ||
+                  part.state === 'approval-responded' ||
+                  part.state === 'call'
+                ) {
                   localState = 'call';
-                } else if (part.state === 'input-streaming') {
+                } else if (part.state === 'input-streaming' || part.state === 'partial-call') {
                   localState = 'partial-call';
                 }
 
@@ -114,7 +124,10 @@ export const MessageBubble = memo(function MessageBubble({ message }: MessageBub
                   toolName,
                   input: part.input,
                   output: part.output,
-                  errorText: part.state === 'output-error' ? (part.errorText || 'An error occurred during execution.') : undefined,
+                  errorText:
+                    part.state === 'output-error' || Boolean(part.errorText)
+                      ? part.errorText || 'An error occurred during execution.'
+                      : undefined,
                 };
 
                 if (toolName === 'scoreLead') {
