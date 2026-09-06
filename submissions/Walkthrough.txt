@@ -1,0 +1,26 @@
+# Motion Button System: State Choreography & Timing Rationale
+
+**Live Demo URL:** https://ai-dev-capstone.vercel.app/buttons
+**GitHub Source:** https://github.com/gandharr/AI-Dev-Capstone/blob/feature/build-core/capstone-app/src/components/ui/MotionButton.tsx
+
+### 1. The 6 Choreographed States
+* **Idle:** Clean baseline with contextual action icon.
+* **Hover / Focus:** 150ms subtle lift (`translateY(-1px)`) with visible focus ring.
+* **Active (Press):** 100ms tactile depression (`scale: 0.97`) for instant physical confirmation before network latency kicks in.
+* **Loading:** 180ms ease-out vertical cross-fade into a continuous rotating spinner.
+* **Success:** Spring pop (`stiffness: 450, damping: 28, mass: 0.8`) into emerald green with a slight celebratory overshoot (`scale: [0.7, 1.15, 1]`), held for 2200ms before auto-resetting.
+* **Error:** 300ms compositor micro-shake (`translateX: [0, -6, 6, -4, 4, -2, 2, 0]`) into ruby red with a "Failed — Retry" label, held for 2200ms or until retried.
+* *(Bonus) Disabled:* `opacity: 0.5`, `aria-disabled="true"`, non-interactive.
+
+### 2. Why These Durations & Easings Were Chosen
+* **Sub-150ms Interaction:** Kept press and hover feedback under the human 100–200ms perceptual threshold so the button feels physically responsive.
+* **Spring Curves on Success:** Used a damped spring rather than a linear swap to provide psychological closure and satisfaction.
+* **2.2s Confirmation Hold:** Ensures users have sufficient cognitive time to register whether their action succeeded or failed before returning to idle.
+* **Zero Layout Thrash:** Exclusively animates GPU compositor-friendly properties (`transform`, `opacity`). Never animates width/height or triggers browser reflows.
+* **Interruptible:** Clears pending timeouts on rapid spam-clicks via React `useRef`, preventing orphaned timers or broken states.
+* **Accessible (`prefers-reduced-motion`):** When reduced motion is enabled, horizontal shakes and scale zooms are disabled while color and icon feedback remain 100% intact.
+
+### 3. The System Flex (Two Buttons, One Motion Language)
+The demo page showcases two buttons sharing the identical motion system and tokens:
+1. **Primary Button:** "Qualify Lead" (integrated into our Capstone AI chat workflow).
+2. **Secondary Button:** "Deploy Scout" (integrated into our autonomous agent CLI workflow).
