@@ -26,7 +26,24 @@ export function ChatInput({ input, handleInputChange, handleSubmit, isLoading, s
     }
   }, [input]);
 
+  // Global Escape key listener to stop generation anywhere in the app
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: globalThis.KeyboardEvent) => {
+      if (e.key === 'Escape' && isLoading) {
+        e.preventDefault();
+        stop();
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [isLoading, stop]);
+
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Escape' && isLoading) {
+      e.preventDefault();
+      stop();
+      return;
+    }
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       if (input.trim() && !isLoading) {
@@ -48,14 +65,18 @@ export function ChatInput({ input, handleInputChange, handleSubmit, isLoading, s
             handleSubmit(e);
           }
         }}
-        className="max-w-3xl mx-auto relative flex items-end bg-muted/50 rounded-3xl border focus-within:ring-1 focus-within:ring-primary/50 transition-shadow"
+        className="max-w-3xl mx-auto relative flex items-end bg-muted/50 rounded-3xl border focus-within:ring-2 focus-within:ring-primary/60 transition-shadow"
       >
+        <label htmlFor="chat-input" className="sr-only">
+          Message AI Assistant
+        </label>
         <textarea
+          id="chat-input"
           ref={textareaRef}
           value={input}
           onChange={handleInputChange}
           onKeyDown={onKeyDown}
-          placeholder="Message AI..."
+          placeholder="Message AI Assistant (Press Enter to send, Esc to stop)..."
           className="w-full max-h-[200px] bg-transparent resize-none px-4 py-3.5 focus:outline-none text-base sm:text-sm disabled:opacity-50"
           rows={1}
           disabled={isLoading}
@@ -73,8 +94,8 @@ export function ChatInput({ input, handleInputChange, handleSubmit, isLoading, s
                 whileTap={{ scale: 0.95 }}
                 type="button"
                 onClick={stop}
-                className="flex items-center justify-center w-8 h-8 rounded-full bg-destructive text-destructive-foreground shadow-sm"
-                aria-label="Stop generating"
+                className="flex items-center justify-center w-8 h-8 rounded-full bg-destructive text-destructive-foreground shadow-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-destructive focus:outline-none"
+                aria-label="Stop generating response (Press Escape)"
               >
                 <Square size={14} fill="currentColor" />
               </motion.button>
@@ -89,7 +110,7 @@ export function ChatInput({ input, handleInputChange, handleSubmit, isLoading, s
                 type="submit"
                 disabled={isSubmitDisabled}
                 className={cn(
-                  "flex items-center justify-center w-8 h-8 rounded-full transition-colors",
+                  "flex items-center justify-center w-8 h-8 rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus:outline-none",
                   isSubmitDisabled
                     ? "bg-muted text-muted-foreground cursor-not-allowed"
                     : "bg-primary text-primary-foreground shadow-sm"
@@ -103,7 +124,7 @@ export function ChatInput({ input, handleInputChange, handleSubmit, isLoading, s
         </div>
       </form>
       <div className="text-center text-xs text-muted-foreground mt-2">
-        AI can make mistakes. Check important info.
+        AI can make mistakes. Check important info. Press <kbd className="px-1.5 py-0.5 text-[10px] bg-muted border rounded font-mono">Esc</kbd> to stop generation.
       </div>
     </div>
   );

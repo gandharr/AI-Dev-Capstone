@@ -3,10 +3,10 @@
 :root {
   --background: #fafafa;
   --foreground: #171717;
-  --primary: #0d9488;
+  --primary: #0f766e;
   --primary-foreground: #ffffff;
   --muted: #f4f4f5;
-  --muted-foreground: #71717a;
+  --muted-foreground: #52525b;
   --border: #e4e4e7;
 }
 
@@ -26,7 +26,7 @@
     --background: #0f172a;
     --foreground: #f8fafc;
     --primary: #14b8a6;
-    --primary-foreground: #ffffff;
+    --primary-foreground: #042f2e;
     --muted: #1e293b;
     --muted-foreground: #94a3b8;
     --border: #334155;

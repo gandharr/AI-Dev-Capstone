@@ -14,13 +14,13 @@ export default function Home() {
       <div className="flex space-x-4">
         <Link
           href="/dashboard"
-          className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-primary-foreground bg-primary rounded-md shadow-sm hover:bg-primary/90 transition-colors"
+          className="inline-flex items-center justify-center px-8 py-3 text-base font-semibold text-primary-foreground bg-primary rounded-md shadow-sm hover:bg-primary/90 transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus:outline-none"
         >
           Go to Dashboard
         </Link>
         <Link
           href="/candidates"
-          className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-foreground bg-background border border-border rounded-md shadow-sm hover:bg-muted transition-colors"
+          className="inline-flex items-center justify-center px-8 py-3 text-base font-semibold text-foreground bg-background border border-border rounded-md shadow-sm hover:bg-muted transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus:outline-none"
         >
           View Candidates
         </Link>

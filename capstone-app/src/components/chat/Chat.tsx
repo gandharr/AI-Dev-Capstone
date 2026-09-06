@@ -83,7 +83,8 @@ export function Chat() {
       </div>
 
       {/* Message Area */}
-      <div 
+      <section
+        aria-label="AI conversation stream"
         ref={scrollRef}
         className="flex-1 overflow-y-auto px-4 py-6 scroll-smooth"
       >
@@ -104,16 +105,18 @@ export function Chat() {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-lg">
                 <button
+                  type="button"
                   onClick={() => handleSuggestionClick("Analyze market trends for the AI software industry")}
-                  className="flex flex-col items-start p-4 bg-card border rounded-xl hover:bg-accent hover:text-accent-foreground transition-colors text-left"
+                  className="flex flex-col items-start p-4 bg-card border rounded-xl hover:bg-accent hover:text-accent-foreground transition-colors text-left focus-visible:ring-2 focus-visible:ring-primary focus:outline-none"
                 >
                   <TrendingUp className="w-5 h-5 mb-2 text-primary" />
                   <span className="font-medium text-sm">Analyze market trends</span>
                   <span className="text-xs text-muted-foreground mt-1 line-clamp-2">See a breakdown of AI software market trends.</span>
                 </button>
                 <button
+                  type="button"
                   onClick={() => handleSuggestionClick("Score a lead for a tech company with 500 employees")}
-                  className="flex flex-col items-start p-4 bg-card border rounded-xl hover:bg-accent hover:text-accent-foreground transition-colors text-left"
+                  className="flex flex-col items-start p-4 bg-card border rounded-xl hover:bg-accent hover:text-accent-foreground transition-colors text-left focus-visible:ring-2 focus-visible:ring-primary focus:outline-none"
                 >
                   <Building2 className="w-5 h-5 mb-2 text-primary" />
                   <span className="font-medium text-sm">Score a lead</span>
@@ -130,7 +133,7 @@ export function Chat() {
             />
           )}
         </div>
-      </div>
+      </section>
 
       {/* Jump to bottom button */}
       <AnimatePresence>
@@ -142,8 +145,10 @@ export function Chat() {
             className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20"
           >
             <button
+              type="button"
               onClick={() => scrollToBottom()}
-              className="flex items-center space-x-2 bg-background border shadow-md rounded-full px-4 py-2 text-sm font-medium hover:bg-muted transition-colors"
+              className="flex items-center space-x-2 bg-background border shadow-md rounded-full px-4 py-2 text-sm font-medium hover:bg-muted transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus:outline-none"
+              aria-label="Scroll to newest messages"
             >
               <ArrowDown size={16} />
               <span>Jump to latest</span>

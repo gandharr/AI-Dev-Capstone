@@ -46,7 +46,13 @@ export function MessageList({ messages, isLoading, error, reload }: MessageListP
   const visibleMessages = messages.filter(m => !isAssistantEmpty(m));
 
   return (
-    <div className="flex flex-col space-y-6 pb-4">
+    <div
+      role="log"
+      aria-live="polite"
+      aria-relevant="additions text"
+      aria-atomic="false"
+      className="flex flex-col space-y-6 pb-4"
+    >
       <AnimatePresence mode="popLayout">
         {visibleMessages.map((message) => (
           <MessageBubble
@@ -76,7 +82,8 @@ export function MessageList({ messages, isLoading, error, reload }: MessageListP
               {reload && (
                 <button
                   onClick={() => reload()}
-                  className="self-start flex items-center space-x-2 bg-background border shadow-sm px-4 py-2 rounded-full text-sm font-medium hover:bg-muted transition-colors text-foreground"
+                  className="self-start flex items-center space-x-2 bg-background border shadow-sm px-4 py-2 rounded-full text-sm font-medium hover:bg-muted transition-colors text-foreground focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary focus:outline-none"
+                  aria-label="Retry message"
                 >
                   <RefreshCcw size={14} />
                   <span>Retry message</span>

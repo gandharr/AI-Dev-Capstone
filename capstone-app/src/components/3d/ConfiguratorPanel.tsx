@@ -183,10 +183,12 @@ export default function ConfiguratorPanel({
       <div className="space-y-3 bg-zinc-950/50 p-3 rounded-xl border border-zinc-800/60">
         <div>
           <div className="flex justify-between text-xs font-medium mb-1">
-            <span className="text-zinc-400">Surface Roughness</span>
+            <label htmlFor="roughness-slider" className="text-zinc-400">Surface Roughness</label>
             <span className="text-zinc-300 font-mono">{config.roughness.toFixed(2)}</span>
           </div>
           <input
+            id="roughness-slider"
+            aria-label="Surface Roughness"
             type="range"
             min="0"
             max="1"
@@ -199,10 +201,12 @@ export default function ConfiguratorPanel({
 
         <div>
           <div className="flex justify-between text-xs font-medium mb-1">
-            <span className="text-zinc-400">Metalness Reflection</span>
+            <label htmlFor="metalness-slider" className="text-zinc-400">Metalness Reflection</label>
             <span className="text-zinc-300 font-mono">{config.metalness.toFixed(2)}</span>
           </div>
           <input
+            id="metalness-slider"
+            aria-label="Metalness Reflection"
             type="range"
             min="0"
             max="1"
@@ -215,10 +219,12 @@ export default function ConfiguratorPanel({
 
         <div>
           <div className="flex justify-between text-xs font-medium mb-1">
-            <span className="text-zinc-400">Neural Emissive Glow</span>
+            <label htmlFor="emissive-slider" className="text-zinc-400">Neural Emissive Glow</label>
             <span className="text-zinc-300 font-mono">{config.emissiveIntensity.toFixed(1)}x</span>
           </div>
           <input
+            id="emissive-slider"
+            aria-label="Neural Emissive Glow"
             type="range"
             min="0"
             max="3"
@@ -288,6 +294,8 @@ export default function ConfiguratorPanel({
         className="border border-dashed border-zinc-700/80 hover:border-blue-500/80 rounded-xl p-3 text-center transition-colors cursor-pointer bg-zinc-950/40 relative group"
       >
         <input
+          id="custom-3d-model-upload"
+          aria-label="Upload custom 3D model in GLB or GLTF format"
           type="file"
           accept=".glb,.gltf"
           onChange={(e) => {
@@ -297,12 +305,12 @@ export default function ConfiguratorPanel({
           }}
           className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
         />
-        <div className="flex items-center justify-center gap-2 text-xs text-zinc-400 group-hover:text-blue-400 transition-colors">
+        <label htmlFor="custom-3d-model-upload" className="flex items-center justify-center gap-2 text-xs text-zinc-400 group-hover:text-blue-400 transition-colors cursor-pointer">
           <Upload className="w-3.5 h-3.5" />
           <span>
             {isGlbLoaded ? "Custom 3D Model Loaded • Drop new .glb" : "Drop custom .glb / .gltf model here"}
           </span>
-        </div>
+        </label>
       </div>
     </div>
   );

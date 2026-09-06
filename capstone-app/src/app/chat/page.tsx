@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 
 export default function ChatPage() {
   return (
-    <main className="h-screen w-full overflow-hidden bg-background">
+    <div className="h-screen w-full overflow-hidden bg-background">
       <Chat />
-    </main>
+    </div>
   );
 }

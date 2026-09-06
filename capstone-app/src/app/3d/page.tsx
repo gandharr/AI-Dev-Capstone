@@ -74,9 +74,9 @@ export default function ThreeDExperiencePage() {
           <span className="text-zinc-600">/</span>
           <div className="flex items-center gap-2">
             <Cpu className="w-4 h-4 text-emerald-400" />
-            <span className="text-sm font-semibold text-zinc-200">
+            <h1 className="text-sm font-semibold text-zinc-200">
               Interactive 3D Experience
-            </span>
+            </h1>
           </div>
         </div>
 
