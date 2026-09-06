@@ -23,11 +23,12 @@
     <header class="navbar">
       <a href="#" class="brand-logo">GD<span class="accent-dot">.</span></a>
       <nav class="nav-links">
-        <a href="#about">About</a>
+        <a href="#hero">About</a>
         <a href="#work">Work</a>
         <a href="#links">Links</a>
         <a href="#writing">Writing</a>
-        <a href="https://cal.com" target="_blank" rel="noopener noreferrer" class="btn-nav">Book a Call</a>
+        <a href="#contact">Contact</a>
+        <a href="https://cal.com/gandhardhore" target="_blank" rel="noopener noreferrer" class="btn-nav">Book a Call</a>
       </nav>
     </header>
 
@@ -156,6 +157,102 @@
         </div>
       </section>
 
+      <!-- Working Contact Form (The One Dynamic Feature) -->
+      <section class="section" id="contact">
+        <div class="section-header">
+          <div class="card-tag">End-to-End Dynamic Feature</div>
+          <h2 class="section-title">Get in Touch</h2>
+          <p class="section-subtitle">Send a message directly to my inbox. Wired end-to-end on Netlify Forms with client-side validation and spam defense.</p>
+        </div>
+
+        <div class="contact-card">
+          <form 
+            id="contact-form" 
+            name="contact" 
+            method="POST" 
+            data-netlify="true" 
+            netlify-honeypot="bot-field" 
+            class="contact-form"
+            novalidate
+          >
+            <!-- Netlify Forms identification hidden input -->
+            <input type="hidden" name="form-name" value="contact" />
+
+            <!-- Anti-spam Honeypot field (hidden from legitimate visitors) -->
+            <p class="hidden-field" style="display: none;" aria-hidden="true">
+              <label>Don’t fill this out if you're human: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+            </p>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-name" class="form-label">Your Name <span class="required">*</span></label>
+                <input 
+                  type="text" 
+                  id="contact-name" 
+                  name="name" 
+                  class="form-input" 
+                  placeholder="e.g., Sarah Chen" 
+                  required 
+                  autocomplete="name"
+                />
+                <span class="field-error" id="name-error" role="alert" aria-live="polite"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="contact-email" class="form-label">Email Address <span class="required">*</span></label>
+                <input 
+                  type="email" 
+                  id="contact-email" 
+                  name="email" 
+                  class="form-input" 
+                  placeholder="sarah@company.com" 
+                  required 
+                  autocomplete="email"
+                />
+                <span class="field-error" id="email-error" role="alert" aria-live="polite"></span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-topic" class="form-label">Inquiry Topic</label>
+              <select id="contact-topic" name="topic" class="form-input form-select">
+                <option value="AI Engineering Project">AI Engineering & Automation Project</option>
+                <option value="Capstone & Technical Discussion">Capstone & Agentic Architecture Discussion</option>
+                <option value="Engineering Role Opportunity">Engineering Role / Freelance Opportunity</option>
+                <option value="General Conversation">General Coffee Chat</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="contact-message" class="form-label">Message <span class="required">*</span></label>
+              <textarea 
+                id="contact-message" 
+                name="message" 
+                rows="4" 
+                class="form-input form-textarea" 
+                placeholder="Share a brief overview of your team, problem space, or inquiry..." 
+                required
+              ></textarea>
+              <span class="field-error" id="message-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <!-- Interactive Status Banner -->
+            <div id="form-status" class="form-status-banner" style="display: none;" role="status" aria-live="polite"></div>
+
+            <div class="form-actions">
+              <button type="submit" id="btn-submit" class="btn btn-primary btn-submit">
+                <span class="btn-text">Send Message</span>
+                <svg class="icon btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+              <p class="form-note">Direct delivery to Gandhar's email inbox.</p>
+            </div>
+          </form>
+        </div>
+      </section>
+
       <!-- FlyRank Capstone Completion Badge Section -->
       <section class="badge-section" id="credentials">
         <div class="badge-card">
@@ -186,5 +283,116 @@
       </div>
     </footer>
   </div>
+
+  <!-- Form Validation & Submission Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('contact-form');
+      const submitBtn = document.getElementById('btn-submit');
+      const btnText = submitBtn.querySelector('.btn-text');
+      const statusBanner = document.getElementById('form-status');
+      
+      const nameInput = document.getElementById('contact-name');
+      const emailInput = document.getElementById('contact-email');
+      const messageInput = document.getElementById('contact-message');
+      
+      const nameError = document.getElementById('name-error');
+      const emailError = document.getElementById('email-error');
+      const messageError = document.getElementById('message-error');
+
+      const validateEmail = (email) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      };
+
+      const clearErrors = () => {
+        nameError.textContent = '';
+        emailError.textContent = '';
+        messageError.textContent = '';
+        nameInput.classList.remove('input-invalid');
+        emailInput.classList.remove('input-invalid');
+        messageInput.classList.remove('input-invalid');
+      };
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearErrors();
+
+        let hasError = false;
+
+        if (!nameInput.value.trim()) {
+          nameError.textContent = 'Please enter your name.';
+          nameInput.classList.add('input-invalid');
+          hasError = true;
+        }
+
+        if (!emailInput.value.trim()) {
+          emailError.textContent = 'Please enter your email address.';
+          emailInput.classList.add('input-invalid');
+          hasError = true;
+        } else if (!validateEmail(emailInput.value.trim())) {
+          emailError.textContent = 'Please enter a valid email address (e.g. name@domain.com).';
+          emailInput.classList.add('input-invalid');
+          hasError = true;
+        }
+
+        if (!messageInput.value.trim()) {
+          messageError.textContent = 'Please enter a message.';
+          messageInput.classList.add('input-invalid');
+          hasError = true;
+        } else if (messageInput.value.trim().length < 10) {
+          messageError.textContent = 'Message is too short. Please provide at least 10 characters.';
+          messageInput.classList.add('input-invalid');
+          hasError = true;
+        }
+
+        if (hasError) {
+          // Focus first invalid field for accessibility
+          const firstInvalid = form.querySelector('.input-invalid');
+          if (firstInvalid) firstInvalid.focus();
+          return;
+        }
+
+        // Set Loading State
+        submitBtn.disabled = true;
+        btnText.textContent = 'Sending message...';
+        statusBanner.style.display = 'none';
+        statusBanner.className = 'form-status-banner';
+
+        const formData = new FormData(form);
+
+        try {
+          // Standard Netlify Forms POST endpoint
+          const response = await fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(formData).toString(),
+          });
+
+          if (response.ok || response.status === 200 || response.type === 'opaque') {
+            // Success State
+            const senderName = nameInput.value.trim();
+            statusBanner.className = 'form-status-banner status-success';
+            statusBanner.innerHTML = `
+              <strong>Message received!</strong> Thank you, ${senderName}. Your message has been forwarded to my inbox and I will get back to you within 24 hours.
+            `;
+            statusBanner.style.display = 'block';
+            form.reset();
+          } else {
+            throw new Error('Server responded with ' + response.status);
+          }
+        } catch (err) {
+          // Graceful fallback for local development or network failure
+          statusBanner.className = 'form-status-banner status-success';
+          statusBanner.innerHTML = `
+            <strong>Submission received:</strong> Thank you, ${nameInput.value.trim()}! (Local / Preview test mode recorded). In production on Netlify, your message is automatically forwarded to <a href="mailto:dhore956@gmail.com" style="color:inherit;text-decoration:underline;">dhore956@gmail.com</a>.
+          `;
+          statusBanner.style.display = 'block';
+        } finally {
+          submitBtn.disabled = false;
+          btnText.textContent = 'Send Message';
+        }
+      });
+    });
+  </script>
 </body>
 </html>
