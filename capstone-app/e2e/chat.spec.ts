@@ -39,7 +39,7 @@ test.describe('Primary User Flow - AI Chat Qualification', () => {
     await expect(analyzeSuggestion).toBeVisible();
 
     // 3. Interact with the chat input
-    const chatInput = page.getByPlaceholder('Message AI...');
+    const chatInput = page.getByRole('textbox', { name: /message ai assistant/i });
     await expect(chatInput).toBeVisible();
 
     await chatInput.fill('Qualify TechCorp for software engineering roles');
