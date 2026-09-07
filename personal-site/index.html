@@ -3,12 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gandhar Dhore — AI & Full-Stack Engineer</title>
-  <meta name="description" content="Personal website and engineering portfolio of Gandhar Dhore. Fast, functional AI-driven applications and autonomous agents.">
+  <title>Gandhar Dhore — AI &amp; Full-Stack Engineer | Autonomous Agents &amp; Modern Web</title>
+  <meta name="description" content="Personal website and engineering portfolio of Gandhar Dhore. Production-grade autonomous agents, Model Context Protocol (MCP), and fast AI-driven web systems.">
+  <meta name="author" content="Gandhar Dhore">
+  <meta name="keywords" content="Gandhar Dhore, AI Engineer, Full-Stack Engineer, Autonomous Agents, Model Context Protocol, MCP, Next.js, Portfolio">
   <meta name="theme-color" content="#0a0a0a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  
+  <link rel="canonical" href="https://gandhardhore.netlify.app/">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+
+  <!-- Open Graph / Facebook / LinkedIn Social Share Preview -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://gandhardhore.netlify.app/">
+  <meta property="og:site_name" content="Gandhar Dhore Portfolio">
+  <meta property="og:title" content="Gandhar Dhore — AI &amp; Full-Stack Engineer">
+  <meta property="og:description" content="Personal website and engineering portfolio of Gandhar Dhore. Fast, functional AI-driven applications, autonomous agents, and production web systems.">
+  <meta property="og:image" content="https://gandhardhore.netlify.app/og-preview.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Gandhar Dhore — AI &amp; Full-Stack Engineer Portfolio Preview">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://gandhardhore.netlify.app/">
+  <meta name="twitter:title" content="Gandhar Dhore — AI &amp; Full-Stack Engineer">
+  <meta name="twitter:description" content="Personal website and engineering portfolio of Gandhar Dhore. Fast, functional AI-driven applications and autonomous agents.">
+  <meta name="twitter:image" content="https://gandhardhore.netlify.app/og-preview.jpg">
+  <meta name="twitter:image:alt" content="Gandhar Dhore — AI &amp; Full-Stack Engineer Portfolio Banner">
+
+  <!-- Structured Data: Person Schema for Search Findability -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Gandhar Dhore",
+    "jobTitle": "AI & Full-Stack Engineer",
+    "url": "https://gandhardhore.netlify.app/",
+    "image": "https://gandhardhore.netlify.app/og-preview.jpg",
+    "sameAs": [
+      "https://github.com/gandharr",
+      "https://linkedin.com/in/gandharr"
+    ],
+    "description": "AI & Full-Stack Engineer specializing in autonomous agents, Model Context Protocol (MCP), and production web applications."
+  }
+  </script>
+
   <!-- Modern Inter Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -158,7 +200,10 @@
               <h3 class="post-title">Understanding DNS & Modern Web Infrastructure <span class="tag-meta">6 min read</span></h3>
               <p class="post-summary">What actually happens between typing a domain and browser response: resolvers, root nameservers, TLDs, and CNAME records explained for engineers.</p>
             </div>
-            <span class="badge-tag">Featured Guide</span>
+            <div class="post-actions">
+              <span class="badge-tag">Featured Guide</span>
+              <a href="https://github.com/gandharr/AI-Dev-Capstone/blob/main/submissions/dns-walkthrough.md" target="_blank" rel="noopener noreferrer" class="post-link" aria-label="Read Understanding DNS and Modern Web Infrastructure guide">Read &rarr;</a>
+            </div>
           </article>
         </div>
       </section>
@@ -239,6 +284,7 @@
                 id="contact-message" 
                 name="message" 
                 rows="4" 
+                maxlength="2000"
                 class="form-input form-textarea" 
                 placeholder="Share a brief overview of your team, problem space, or inquiry..." 
                 required
@@ -265,7 +311,7 @@
 
       <!-- FlyRank Capstone Verification Badge Section -->
       <section class="badge-section" id="credentials">
-        <div class="badge-card">
+        <a href="https://github.com/gandharr/AI-Dev-Capstone" target="_blank" rel="noopener noreferrer" class="badge-card badge-card-link">
           <div class="badge-icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
@@ -278,9 +324,9 @@
             </p>
           </div>
           <div class="badge-status">
-            <span class="status-pill status-verified">Week 7 Milestone Cleared</span>
+            <span class="status-pill status-verified">Week 7 Cleared &bull; Verify &rarr;</span>
           </div>
-        </div>
+        </a>
       </section>
     </main>
 
@@ -310,6 +356,15 @@
       const emailError = document.getElementById('email-error');
       const messageError = document.getElementById('message-error');
 
+      let isSubmitting = false;
+
+      // Safe HTML escaping helper to prevent DOM XSS injection
+      const escapeHTML = (str) => {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      };
+
       const validateEmail = (email) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       };
@@ -325,32 +380,47 @@
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // Prevent race conditions and rapid double-submits
+        if (isSubmitting) return;
+
         clearErrors();
 
         let hasError = false;
+        const trimmedName = nameInput.value.trim();
+        const trimmedEmail = emailInput.value.trim();
+        const trimmedMessage = messageInput.value.trim();
 
-        if (!nameInput.value.trim()) {
+        if (!trimmedName) {
           nameError.textContent = 'Please enter your name.';
+          nameInput.classList.add('input-invalid');
+          hasError = true;
+        } else if (trimmedName.length > 100) {
+          nameError.textContent = 'Name is too long (maximum 100 characters).';
           nameInput.classList.add('input-invalid');
           hasError = true;
         }
 
-        if (!emailInput.value.trim()) {
+        if (!trimmedEmail) {
           emailError.textContent = 'Please enter your email address.';
           emailInput.classList.add('input-invalid');
           hasError = true;
-        } else if (!validateEmail(emailInput.value.trim())) {
+        } else if (!validateEmail(trimmedEmail)) {
           emailError.textContent = 'Please enter a valid email address (e.g. name@domain.com).';
           emailInput.classList.add('input-invalid');
           hasError = true;
         }
 
-        if (!messageInput.value.trim()) {
+        if (!trimmedMessage) {
           messageError.textContent = 'Please enter a message.';
           messageInput.classList.add('input-invalid');
           hasError = true;
-        } else if (messageInput.value.trim().length < 10) {
+        } else if (trimmedMessage.length < 10) {
           messageError.textContent = 'Message is too short. Please provide at least 10 characters.';
+          messageInput.classList.add('input-invalid');
+          hasError = true;
+        } else if (trimmedMessage.length > 2000) {
+          messageError.textContent = 'Message is too long (maximum 2000 characters).';
           messageInput.classList.add('input-invalid');
           hasError = true;
         }
@@ -362,7 +432,8 @@
           return;
         }
 
-        // Set Loading State
+        // Lock submission state
+        isSubmitting = true;
         submitBtn.disabled = true;
         btnText.textContent = 'Sending message...';
         statusBanner.style.display = 'none';
@@ -379,11 +450,11 @@
           });
 
           if (response.ok || response.status === 200 || response.type === 'opaque') {
-            // Success State
-            const senderName = nameInput.value.trim();
+            // Success State with strict HTML escaping
+            const safeName = escapeHTML(trimmedName);
             statusBanner.className = 'form-status-banner status-success';
             statusBanner.innerHTML = `
-              <strong>Message received!</strong> Thank you, ${senderName}. Your message has been forwarded to my inbox and I will get back to you within 24 hours.
+              <strong>Message received!</strong> Thank you, ${safeName}. Your message has been forwarded to my inbox and I will get back to you within 24 hours.
             `;
             statusBanner.style.display = 'block';
             form.reset();
@@ -391,13 +462,15 @@
             throw new Error('Server responded with ' + response.status);
           }
         } catch (err) {
-          // Graceful fallback for local development or network failure
+          // Graceful fallback for local development or network failure with strict HTML escaping
+          const safeName = escapeHTML(trimmedName);
           statusBanner.className = 'form-status-banner status-success';
           statusBanner.innerHTML = `
-            <strong>Submission received:</strong> Thank you, ${nameInput.value.trim()}! (Local / Preview test mode recorded). In production on Netlify, your message is automatically forwarded to <a href="mailto:dhore956@gmail.com" style="color:inherit;text-decoration:underline;">dhore956@gmail.com</a>.
+            <strong>Submission received:</strong> Thank you, ${safeName}! (Local / Preview test mode recorded). In production on Netlify, your message is automatically forwarded to <a href="mailto:dhore956@gmail.com" style="color:inherit;text-decoration:underline;">dhore956@gmail.com</a>.
           `;
           statusBanner.style.display = 'block';
         } finally {
+          isSubmitting = false;
           submitBtn.disabled = false;
           btnText.textContent = 'Send Message';
         }

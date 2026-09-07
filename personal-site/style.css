@@ -235,13 +235,13 @@ body {
 }
 
 .btn-primary {
-  background-color: var(--accent-blue);
+  background-color: #2563eb;
   color: #ffffff;
-  border: 1px solid var(--accent-blue);
+  border: 1px solid #2563eb;
 }
 .btn-primary:hover {
-  background-color: var(--accent-blue-hover);
-  border-color: var(--accent-blue-hover);
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
   transform: translateY(-1px);
   box-shadow: 0 4px 14px var(--accent-glow);
 }
@@ -516,6 +516,25 @@ body {
   color: #34d399;
   background: rgba(16, 185, 129, 0.12);
   border-color: rgba(16, 185, 129, 0.3);
+}
+
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.badge-card-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.badge-card-link:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
 }
 
 /* ==========================================================================
