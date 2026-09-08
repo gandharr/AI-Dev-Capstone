@@ -63,6 +63,13 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Fullscreen Hero Fragment Shader (Cyber Aurora / Neural Flow Field) -->
+  <div class="hero-shader-backdrop" aria-hidden="true" id="hero-shader-backdrop">
+    <canvas id="hero-shader-canvas" class="hero-shader-canvas"></canvas>
+    <div class="hero-shader-vignette"></div>
+    <div class="hero-shader-fallback"></div>
+  </div>
+
   <!-- Background Glow Accents -->
   <div class="bg-glow bg-glow-1"></div>
   <div class="bg-glow bg-glow-2"></div>
@@ -546,5 +553,8 @@
       });
     });
   </script>
+
+  <!-- Interactive WebGL Fragment Shader Hero -->
+  <script src="shader.js" defer></script>
 </body>
 </html>
