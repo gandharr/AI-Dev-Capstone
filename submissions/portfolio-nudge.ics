@@ -1,0 +1,22 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Gandhar Dhore//Portfolio Update Cadence//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:portfolio-case-study-nudge-20261001@gandhardhore.com
+DTSTAMP:20260908T164500Z
+DTSTART:20261001T043000Z
+DTEND:20261001T053000Z
+SUMMARY:🚀 Add Project #3 to Engineering Portfolio (Keep Building Cadence)
+DESCRIPTION:Time to keep the portfolio active! Follow the 5-step playbook in submissions/the-plan-to-keep-building.md:\n\n1. Open Claude Project / Antigravity IDE (it knows your voice, stack, and obsidian identity kit).\n2. Format Project #3 (Autonomous Multi-Agent SEC 10-K Pipeline) into the Week 2 Three-Beat Shape (Problem -> What You Did -> What Came Of It).\n3. Insert <article class="project-card"> into personal-site/index.html under #work.\n4. Run local preview to check mobile contrast.\n5. Git commit & push to deploy automatically to Netlify!
+LOCATION:https://gandhar-dhore.netlify.app/
+STATUS:CONFIRMED
+RRULE:FREQ=MONTHLY;BYMONTHDAY=1
+BEGIN:VALARM
+TRIGGER:-PT15M
+ACTION:DISPLAY
+DESCRIPTION:Reminder: Add Project #3 to Engineering Portfolio
+END:VALARM
+END:VEVENT
+END:VCALENDAR
