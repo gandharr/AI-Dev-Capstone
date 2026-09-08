@@ -6,9 +6,114 @@ import { GEMINI_MODEL_FALLBACKS, chatSystemPrompt } from '@/lib/ai-config';
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
+// =============================================================================
+// Production Hygiene: Abuse Protection & Rate Limiting
+// =============================================================================
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1-minute sliding window
+const MAX_REQUESTS_PER_WINDOW = 12;     // 12 requests per minute per IP
+const MAX_MESSAGES_HISTORY = 25;        // Maximum conversation depth
+const MAX_MESSAGE_CHARACTERS = 1500;    // Maximum character length per message
+
+// In-memory sliding window rate limiter store
+const ipRequestTimestamps = new Map<string, number[]>();
+
+function checkRateLimit(clientIp: string): { allowed: boolean; retryAfterSeconds?: number } {
+  const now = Date.now();
+  const timestamps = ipRequestTimestamps.get(clientIp) || [];
+
+  // Filter active timestamps in window
+  const activeTimestamps = timestamps.filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+
+  if (activeTimestamps.length >= MAX_REQUESTS_PER_WINDOW) {
+    const oldest = activeTimestamps[0];
+    const retryAfter = Math.ceil((RATE_LIMIT_WINDOW_MS - (now - oldest)) / 1000);
+    return { allowed: false, retryAfterSeconds: Math.max(1, retryAfter) };
+  }
+
+  activeTimestamps.push(now);
+  ipRequestTimestamps.set(clientIp, activeTimestamps);
+
+  // Periodic pruning of inactive IPs to avoid memory leaks
+  if (ipRequestTimestamps.size > 2000) {
+    for (const [ip, tsList] of ipRequestTimestamps.entries()) {
+      const valid = tsList.filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+      if (valid.length === 0) {
+        ipRequestTimestamps.delete(ip);
+      } else {
+        ipRequestTimestamps.set(ip, valid);
+      }
+    }
+  }
+
+  return { allowed: true };
+}
+
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    // 1. IP-Based Sliding Rate Limiting
+    const forwarded = req.headers.get('x-forwarded-for');
+    const clientIp = forwarded ? forwarded.split(',')[0].trim() : (req.headers.get('x-real-ip') || 'anonymous-client');
+    const rateLimit = checkRateLimit(clientIp);
+
+    if (!rateLimit.allowed) {
+      console.warn(`[AbuseProtection] Rate limit exceeded for client IP: ${clientIp}`);
+      return new Response(
+        JSON.stringify({
+          error: 'Rate limit exceeded. Too many requests in a short period. Please wait before sending more messages.',
+          retryAfter: rateLimit.retryAfterSeconds,
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': String(rateLimit.retryAfterSeconds || 60),
+          },
+        }
+      );
+    }
+
+    // 2. Parse request body safely
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ error: 'Malformed JSON payload.' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { messages } = body;
+
+    // 3. Input validation and conversation depth cap
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return new Response(
+        JSON.stringify({ error: 'Payload must include a non-empty "messages" array.' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (messages.length > MAX_MESSAGES_HISTORY) {
+      return new Response(
+        JSON.stringify({
+          error: `Conversation history exceeds maximum depth of ${MAX_MESSAGES_HISTORY} messages. Please reset the chat session.`,
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // 4. Input characters length cap (prevent token exhaustion / DOS)
+    for (const msg of messages) {
+      const content = msg.content || (Array.isArray(msg.parts) ? msg.parts.map((p: { text?: string }) => p.text || '').join('') : '');
+      if (typeof content === 'string' && content.length > MAX_MESSAGE_CHARACTERS) {
+        return new Response(
+          JSON.stringify({
+            error: `Message content exceeds maximum allowed limit of ${MAX_MESSAGE_CHARACTERS} characters.`,
+          }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    }
 
     console.log('Incoming messages:', JSON.stringify(messages, null, 2));
 

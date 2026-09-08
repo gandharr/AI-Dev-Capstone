@@ -45,6 +45,29 @@ The **AI Lead Qualification Agent** is an end-to-end autonomous assistant engine
 
 ---
 
+## 📸 Visual Showcase
+
+### Generative UI Tool Execution & Live Chat
+*The agent autonomously triggers `scoreLead` and renders a live qualification scorecard alongside real-time market charts.*
+
+![Chat Generative UI Tool Cards](./submissions/1.png)
+
+---
+
+### Interactive 3D Neural Core (`/3d`)
+*Procedural multi-layer 3D hardware visualization representing autonomous AI compute.*
+
+![3D Neural Core](./submissions/3d-desktop-initial.png)
+
+---
+
+### Fullscreen Cyber Aurora Fragment Shader Hero
+*Custom WebGL GLSL fragment shader with mouse interaction and WCAG AAA contrast.*
+
+![Shader Hero](./submissions/shader-hero-desktop.png)
+
+---
+
 ## 🛠️ Quickstart: Clone & Run in 60 Seconds
 
 A reviewer can clone and run this application with zero external setup or required API keys.
@@ -177,13 +200,13 @@ Rather than treating AI as an auto-pilot black box, this project leveraged **age
 
 ### Run Vitest Component & Abuse Protection Tests
 ```bash
-npm run test
+npm --prefix capstone-app run test
 ```
 *Result: 5 test files passed, 18 unit tests passed (100% green).*
 
 ### Run Playwright E2E Chat & Navigation Tests
 ```bash
-npm run test:e2e
+npm --prefix capstone-app run test:e2e
 ```
 
 ---
