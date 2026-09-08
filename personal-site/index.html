@@ -10,28 +10,28 @@
   <meta name="theme-color" content="#0a0a0a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="canonical" href="https://gandhardhore.netlify.app/">
+  <link rel="canonical" href="https://gandhar-dhore.netlify.app/">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 
   <!-- Open Graph / Facebook / LinkedIn Social Share Preview -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://gandhardhore.netlify.app/">
+  <meta property="og:url" content="https://gandhar-dhore.netlify.app/">
   <meta property="og:site_name" content="Gandhar Dhore Portfolio">
   <meta property="og:title" content="Gandhar Dhore — AI &amp; Full-Stack Engineer">
   <meta property="og:description" content="Personal website and engineering portfolio of Gandhar Dhore. Fast, functional AI-driven applications, autonomous agents, and production web systems.">
-  <meta property="og:image" content="https://gandhardhore.netlify.app/og-preview.jpg">
+  <meta property="og:image" content="https://gandhar-dhore.netlify.app/og-preview.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Gandhar Dhore — AI &amp; Full-Stack Engineer Portfolio Preview">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://gandhardhore.netlify.app/">
+  <meta name="twitter:url" content="https://gandhar-dhore.netlify.app/">
   <meta name="twitter:title" content="Gandhar Dhore — AI &amp; Full-Stack Engineer">
   <meta name="twitter:description" content="Personal website and engineering portfolio of Gandhar Dhore. Fast, functional AI-driven applications and autonomous agents.">
-  <meta name="twitter:image" content="https://gandhardhore.netlify.app/og-preview.jpg">
+  <meta name="twitter:image" content="https://gandhar-dhore.netlify.app/og-preview.jpg">
   <meta name="twitter:image:alt" content="Gandhar Dhore — AI &amp; Full-Stack Engineer Portfolio Banner">
 
   <!-- Structured Data: Person Schema for Search Findability -->
@@ -41,8 +41,8 @@
     "@type": "Person",
     "name": "Gandhar Dhore",
     "jobTitle": "AI & Full-Stack Engineer",
-    "url": "https://gandhardhore.netlify.app/",
-    "image": "https://gandhardhore.netlify.app/og-preview.jpg",
+    "url": "https://gandhar-dhore.netlify.app/",
+    "image": "https://gandhar-dhore.netlify.app/og-preview.jpg",
     "sameAs": [
       "https://github.com/gandharr",
       "https://linkedin.com/in/gandharr"
@@ -50,6 +50,10 @@
     "description": "AI & Full-Stack Engineer specializing in autonomous agents, Model Context Protocol (MCP), and production web applications."
   }
   </script>
+
+  <!-- Free Privacy-Friendly Web Analytics (GoatCounter) -->
+  <script data-goatcounter="https://gandhar-dhore.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
 
   <!-- Modern Inter Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -330,19 +334,81 @@
       </section>
     </main>
 
-    <!-- Footer -->
+    <!-- Footer with Official FlyRank Graduate Badge -->
     <footer class="footer">
-      <p>&copy; 2026 Gandhar Dhore. Built with clean semantic HTML & CSS. Deployed over secure HTTPS.</p>
-      <div class="footer-links">
-        <a href="https://github.com/gandharr" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://linkedin.com/in/gandharr" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <div class="footer-top">
+        <!-- FlyRank Graduate Badge -->
+        <a 
+          href="https://github.com/gandharr/AI-Dev-Capstone" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="flyrank-graduate-badge"
+          id="flyrank-graduate-badge"
+          aria-label="Verify Gandhar Dhore's FlyRank AI Engineering Track Certification"
+        >
+          <div class="badge-emblem">
+            <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="rgba(16, 185, 129, 0.2)" stroke="#10b981"/>
+              <path d="M12 8l1.8 3.6 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4L6.2 12.2l4-.6L12 8z" fill="#34d399" stroke="#34d399"/>
+            </svg>
+          </div>
+          <div class="badge-text-group">
+            <span class="badge-label">FlyRank Certified AI Engineer</span>
+            <span class="badge-sublabel">Track Graduate &bull; Verified Credential &rarr;</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Gandhar Dhore. Built with clean semantic HTML &amp; CSS. Deployed over secure HTTPS.</p>
+        <div class="footer-links">
+          <a href="https://github.com/gandharr" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="https://linkedin.com/in/gandharr" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </div>
       </div>
     </footer>
   </div>
 
-  <!-- Form Validation & Submission Script -->
+  <!-- Analytics Telemetry & Form Validation Script -->
   <script>
+    // Lightweight event tracker for high-value user conversions
+    window.trackEvent = (eventName, metadata = {}) => {
+      try {
+        console.log(`[Analytics Event] ${eventName}:`, metadata);
+        if (window.goatcounter && typeof window.goatcounter.count === 'function') {
+          window.goatcounter.count({
+            path: eventName,
+            title: eventName,
+            event: true,
+          });
+        }
+      } catch (err) {
+        // Safe no-op if blocked by client extension
+      }
+    };
+
     document.addEventListener('DOMContentLoaded', () => {
+      // Wire telemetry tracking to conversion points
+      const btnCv = document.getElementById('btn-cv');
+      if (btnCv) {
+        btnCv.addEventListener('click', () => window.trackEvent('download_cv', { location: 'hero' }));
+      }
+
+      const btnBooking = document.getElementById('btn-booking');
+      if (btnBooking) {
+        btnBooking.addEventListener('click', () => window.trackEvent('book_meeting', { location: 'hero' }));
+      }
+
+      const navBooking = document.querySelector('.btn-nav');
+      if (navBooking) {
+        navBooking.addEventListener('click', () => window.trackEvent('book_meeting', { location: 'navbar' }));
+      }
+
+      const gradBadge = document.getElementById('flyrank-graduate-badge');
+      if (gradBadge) {
+        gradBadge.addEventListener('click', () => window.trackEvent('verify_graduate_badge', { location: 'footer' }));
+      }
+
       const form = document.getElementById('contact-form');
       const submitBtn = document.getElementById('btn-submit');
       const btnText = submitBtn.querySelector('.btn-text');
@@ -438,6 +504,9 @@
         btnText.textContent = 'Sending message...';
         statusBanner.style.display = 'none';
         statusBanner.className = 'form-status-banner';
+
+        // Track conversion event
+        window.trackEvent('contact_form_submit', { nameLength: trimmedName.length });
 
         const formData = new FormData(form);
 
