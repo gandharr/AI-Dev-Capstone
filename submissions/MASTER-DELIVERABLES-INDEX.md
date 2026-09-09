@@ -60,6 +60,7 @@ This master index maps every deliverable from all 10 weeks of the FlyRank AI Eng
 | **Week 10** | **Assignment 8.2 (FL-10): Final Capstone Retrospective** | [`retrospective.md`](./retrospective.md) | 500–800 word reflection for Week 1 self (shifts, next builds, 3 transferable skills) | **VERIFIED** |
 | **Week 10** | **Assignment 8.2 (FL-10): Verified Hours Log** | [`hours-log.md`](./hours-log.md) | Audit-ready log of ~72 verified engineering hours across all phases | **VERIFIED** |
 | **Week 10** | **Assignment 8.2 (FL-10): Build-in-Public Post** | [`build-in-public-post.md`](./build-in-public-post.md) | Public LinkedIn/X launch post explaining one real decision and one limitation | **VERIFIED** |
+| **Week 10** | **Final Capstone: Production AI Frontend App** | [`capstone-portfolio-entry.md`](./capstone-portfolio-entry.md) | Single structured portfolio entry (7 sections, live URL, tests, audit, checklist, reflection) | **VERIFIED** |
 
 ---
 
